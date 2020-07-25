@@ -54,11 +54,9 @@ client.on('message', msg => {
   if (prefix === cmdPrefix) { // Only look at messages with the correct command prefix
     if (command === "hello") {
       msg.channel.send("hello");
-    }
-    else if (command === "say") {
+    } else if (command === "say") {
       msg.channel.send(msgArray.join(" "));
-    }
-    else if (command === "sub") {
+    } else if (command === "sub") {
       // check for the sub tiers
       if (msgArray.join(" ").toLowerCase() === 'tier 3') {
         const t3embed = new Discord.MessageEmbed()
@@ -82,6 +80,22 @@ client.on('message', msg => {
         t1embed.setDescription(`Thanks, I guess...`)
         t1embed.setImage('https://www.talkesport.com/wp-content/uploads/tenor-1.gif')
         msg.channel.send(t1embed)
+      }
+    } else if (command === "pokigasm") {
+      gasmEmbed = new Discord.MessageEmbed()
+      gasmEmbed.setColor('#b970df')
+      gasmEmbed.setImage('https://thumbs.gfycat.com/DimFancyFairyfly-size_restricted.gif')
+      gasmEmbed.setTitle('Pokigasm')
+      gasmEmbed.setDescription(`Oh yes <@${msg.author.id}>`)
+      msg.channel.send(gasmEmbed)
+    } else if (command === 'send') {
+      if (msgArray.join(' ') === 'feet pics maybe?') {
+        feetEmbed = new Discord.MessageEmbed()
+        feetEmbed.setColor('#b970df')
+        feetEmbed.setTitle('Well...')
+        feetEmbed.setDescription('You did donate soooo....')
+        feetEmbed.setImage('https://i.redd.it/skd0krqm35x31.gif')
+        msg.channel.send(feetEmbed)
       }
     }
   }
