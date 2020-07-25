@@ -51,8 +51,11 @@ client.on('message', msg => {
     command = msgArray.shift();
   }
 
-  
+  // help
+  if (msgArray.join(' ') === '!help') {
+    msg.author.send('read the code: https://github.com/AndroidKitKat/pokibot')
 
+  }
   // free bobby!
   if (prefix === '!free') {
    if (command === 'bobby') {
@@ -63,6 +66,17 @@ client.on('message', msg => {
      bobbyEmbed.setImage('https://www.mypokecard.com/en/Gallery/my/galery/AUFz107M7SKK.jpg')
      msg.channel.send(bobbyEmbed)
    }
+  }
+  // homo simpians
+  if (prefix === '!simp') {
+    if (command === 'alert') {
+      simpEmbed = new Discord.MessageEmbed()
+      simpEmbed.setColor('#b970df')
+      simpEmbed.setTitle('Hey man')
+      simpEmbed.setDescription('We only simp ironically here')
+      simpEmbed.setImage('https://dxt.resized.co/dexerto/eyJkYXRhIjoie1widXJsXCI6XCJodHRwczpcXFwvXFxcL2ltYWdlcy5kZXhlcnRvLmNvbVxcXC91cGxvYWRzXFxcLzIwMjBcXFwvMDZcXFwvMzAyMTQ1MTlcXFwvcG9raW1hbmVjb21tZW50c2ltcGFubm95aW5nLmdpZlwiLFwid2lkdGhcIjo2MjAsXCJoZWlnaHRcIjozNDcsXCJkZWZhdWx0XCI6XCJodHRwczpcXFwvXFxcL2ltYWdlcy5kZXhlcnRvLmNvbVxcXC91cGxvYWRzXFxcLzIwMTlcXFwvMTFcXFwvMTEyMTQ5NDNcXFwvcGxhY2Vob2xkZXIuanBnXCIsXCJvcHRpb25zXCI6e1wib3V0cHV0XCI6XCJ3ZWJwXCJ9fSIsImhhc2giOiJmNjk1Y2Y2MGZkOGQ2MjdiYTBlNGE5NTU5YWE2ZWIwYThlZGE4MzdlIn0=/pokimane-reveals-how-she-deals-with-annoying-online-simp-comments.gif')
+      msg.channel.send(simpEmbed)
+    }
   }
 
   if (prefix === cmdPrefix) { // Only look at messages with the correct command prefix
