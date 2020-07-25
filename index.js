@@ -39,7 +39,7 @@ https://twitch.tv/pokimane`)
 });
 
 client.on('message', msg => {
-  console.log(msg)
+  // commands here
 });
 
 
