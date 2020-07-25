@@ -55,6 +55,9 @@ client.on('message', msg => {
     if (command === "hello") {
       msg.channel.send("hello");
     }
+    else if (command === "say") {
+      msg.channel.send(msgArray.join(" "));
+    }
   }
 });
 
