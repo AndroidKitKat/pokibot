@@ -3,6 +3,8 @@ const client = new Discord.Client();
 const fetch = require('node-fetch')
 
 client.on('ready', () => {
+  const discordToken = process.env.DISCORD_BOT_TOKEN
+  const twitchToken = process.env.TWITCH_OAUTH_TOKEN
   console.log(`Logged in as ${client.user.tag}!`);
   setInterval(function() {
     pokiStreamUrl = 'https://api.twitch.tv/kraken/streams/44445592'
@@ -10,7 +12,7 @@ client.on('ready', () => {
         headers: {
             'Accept': 'application/vnd.twitchtv.v5+json',
             'Client-ID': 'zfwmhzfmpxrhdoufl2cwf7z2iqlk6l',
-            'Authorization': 'Bearer e0pe2ag5egmts419ctm3pt72kmtpwl',
+            'Authorization': `Bearer ${twitchToken}`,
         },
         method: 'GET',
     })
@@ -25,10 +27,8 @@ client.on('ready', () => {
   }, 5000)
 });
 
-
-
 client.on('message', msg => {
   console.log(msg)
 });
 
-client.login('NzM2MzE3OTYwNjkxNTE1NDEy.XxtDiQ.uAMot03avcIN8bRQXNA_CIqsOfM');
+client.login(discordToken);
