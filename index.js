@@ -51,6 +51,20 @@ client.on('message', msg => {
     command = msgArray.shift();
   }
 
+  
+
+  // free bobby!
+  if (prefix === '!free') {
+   if (command === 'bobby') {
+     bobbyEmbed = new Discord.MessageEmbed()
+     bobbyEmbed.setColor('#eb3327')
+     bobbyEmbed.setTitle('Pokimane?')
+     bobbyEmbed.setDescription('Nah, pokemon')
+     bobbyEmbed.setImage('https://www.mypokecard.com/en/Gallery/my/galery/AUFz107M7SKK.jpg')
+     msg.channel.send(bobbyEmbed)
+   }
+  }
+
   if (prefix === cmdPrefix) { // Only look at messages with the correct command prefix
     if (command === "hello") {
       msg.channel.send("hello");
