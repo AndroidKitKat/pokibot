@@ -29,9 +29,14 @@ client.on('ready', () => {
         } else {
           client.user.setActivity('Pokimane', { type: 'WATCHING' });
           if (alertSent == false) {
-            simpChannel.send(`@here Poki is online!
-${data.stream.channel.game}
+            liveEmbed = new Discord.MessageEmbed()
+            liveEmbed.setColor('#eb3327')
+            liveEmbed.setTitle('@here, Pokimane is Live on Twitch!')
+            liveEmbed.setImage(data.stream.preview.large)
+            liveEmbed.setDescription(`Get your simp on!
+${data.stream.channel.status}
 https://twitch.tv/pokimane`)
+            simpChannel.send(liveEmbed)
             alertSent = true
           }
         }
