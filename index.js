@@ -56,7 +56,12 @@ client.on('message', msg => {
       msg.channel.send("hello");
     }
     else if (command === "say") {
-      msg.channel.send(msgArray.join(" "));
+      if (msgArray.length >= 1) {
+        msg.channel.send(msgArray.join(" "));
+      }
+      else {
+        msg.channel.send("Hey you fucked up, give me something to say, !p say <message>");
+      }
     }
   }
 });
