@@ -58,6 +58,32 @@ client.on('message', msg => {
     else if (command === "say") {
       msg.channel.send(msgArray.join(" "));
     }
+    else if (command === "sub") {
+      // check for the sub tiers
+      if (msgArray.join(" ").toLowerCase() === 'tier 3') {
+        const t3embed = new Discord.MessageEmbed()
+        console.log(msg)
+        t3embed.setTitle('Thanks for the Sub ^_^')
+        t3embed.setColor('#b970df')
+        t3embed.setDescription(`I reaaallllyyy appreciate the sub <@${msg.author.id}>.`)
+        t3embed.setImage('https://media.tenor.com/images/0de2b320fc290bd68a63f55431f9bf4f/tenor.gif')
+        msg.channel.send(t3embed)
+      } else if (msgArray.join(" ").toLowerCase() === 'tier 2') {
+        const t2embed = new Discord.MessageEmbed()
+        t2embed.setTitle('Thanks for the sub')
+        t2embed.setColor('#b970df')
+        t2embed.setDescription(`Thanks, but it won't buy me a new computer`)
+        t2embed.setImage('https://thumbs.gfycat.com/BlissfulBriefAngwantibo-max-1mb.gif')
+        msg.channel.send(t2embed)
+      } else if (msgArray.join(" ").toLowerCase() === 'tier 1') {
+        const t1embed = new Discord.MessageEmbed()
+        t1embed.setTitle('...')
+        t1embed.setColor('#b970df')
+        t1embed.setDescription(`Thanks, I guess...`)
+        t1embed.setImage('https://www.talkesport.com/wp-content/uploads/tenor-1.gif')
+        msg.channel.send(t1embed)
+      }
+    }
   }
 });
 
