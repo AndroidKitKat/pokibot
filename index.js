@@ -1,22 +1,15 @@
 const Discord = require('discord.js');
+const fetch = require('node-fetch');
+const { CronJob } = require('cron');
+const cron = require('cron').CronJob
 const client = new Discord.Client();
-const fetch = require('node-fetch')
-const Schedule = require('schedule-js')
-const bobbyTime = new Schedule(sendBobbyMessage)
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 
-var bobbyChannel = null
-var simpChannel = null
+var bobbyChannel
+var simpChannel
 var cmdPrefix = "!p";
 var alertSent = false
-
-function sendBobbyMessage() {
-  bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
-}
-
-// announce how many days bobby has left at midnight (free bobby btw)
-bobbyTime.scheduleAt('1d', '00:00')
 
 function calcBobbyTime() {
   // how much is one day?
@@ -29,10 +22,19 @@ function calcBobbyTime() {
   return timeLeft
 }
 
+
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
+  console.log('started bobby cronjob')
   simpChannel = client.channels.cache.get('690014059663458310')
   bobbyChannel = client.channels.cache.get('736706894667841626')
+
+  var freeBobbyMessage = new CronJob('0 0 * * *', function(){
+    bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
+    console.log('fired bobby message')
+  }, null, true)
+
+  freeBobbyMessage.start()
   setInterval(function() {
     pokiStreamUrl = 'https://api.twitch.tv/kraken/streams/44445592'
     fetch(pokiStreamUrl, {
@@ -59,6 +61,7 @@ client.on('ready', () => {
 ${data.stream.channel.status}
 https://twitch.tv/pokimane`)
             simpChannel.send(liveEmbed)
+            console.log('poki is now online')
             alertSent = true
           }
         }
@@ -66,6 +69,11 @@ https://twitch.tv/pokimane`)
   }, 5000);
 });
 
+
+function sendBobbyMessage() {
+}
+
+// essentially bot commands
 client.on('message', msg => {
   // Simple say command
   var msgArray = msg.content.split(" ");
