@@ -5,13 +5,11 @@ const fetch = require('node-fetch')
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 
-var pokiOnline = false
-var alertMessageSent = false
+var alertSent = false
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  client.channels.get(`690014059663458310`).send('Pokimane is not online');
-  console.log(simpChannel)
+  var simpChannel = client.channels.cache.get('690014059663458310')
   setInterval(function() {
     pokiStreamUrl = 'https://api.twitch.tv/kraken/streams/44445592'
     fetch(pokiStreamUrl, {
@@ -24,13 +22,17 @@ client.on('ready', () => {
     })
     .then(response => response.json())
     .then(data => {
-      
         if (data.stream == null) {
           client.user.setActivity('Not Pokimane', { type: 'WATCHING' });
-          pokiOnline = false
+          alertSent = false          
         } else {
           client.user.setActivity('Pokimane', { type: 'WATCHING' });
-          pokiOnline = true
+          if (alertSent == false) {
+            simpChannel.send(`@here Poki is online!
+${data.stream.channel.game}
+https://twitch.tv/pokimane`)
+            alertSent = true
+          }
         }
     })
   }, 5000)
