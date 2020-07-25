@@ -1,18 +1,39 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
+const bobbyTime = new Schedule(sendBobbyMessage)
 const fetch = require('node-fetch')
+const Schedule = require('schedule-js')
 
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 
-var releaseDate = new Date(2020, 11, 11, 0, 0, 0, 0); // Day bobby shmurda is released
-var shmurdaTimeLeft = 1;
+var bobbyChannel = null
+var simpChannel = null
 var cmdPrefix = "!p";
 var alertSent = false
 
+function sendBobbyMessage() {
+  bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
+}
+
+// announce how many days bobby has left at midnight (free bobby btw)
+bobbyTime.scheduleAt('1d', '00:00')
+
+function calcBobbyTime() {
+  // how much is one day?
+  const oneDay = 24 * 60 * 60 * 1000
+  // bobby is free on this day
+  const releaseDate = new Date(2020, 11, 11)
+  // what is the current date?
+  const today = new Date()
+  const timeLeft = Math.round(Math.abs((releaseDate - today) / oneDay))
+  return timeLeft
+}
+
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`);
-  var simpChannel = client.channels.cache.get('690014059663458310')
+  simpChannel = client.channels.cache.get('690014059663458310')
+  bobbyChannel = client.channels.cache.get('736706894667841626')
   setInterval(function() {
     pokiStreamUrl = 'https://api.twitch.tv/kraken/streams/44445592'
     fetch(pokiStreamUrl, {
@@ -44,13 +65,6 @@ https://twitch.tv/pokimane`)
         }
     })
   }, 5000);
-  setInterval(function() { // Function that updates time till bobby is released
-    var currentDate = new Date();
-    var shmurdaTimeLeft = releaseDate - currentDate;
-    if (shmurdaTimeLeft <= 0) {
-      shmurdaTimeLeft = 0; // Will add logic to send a bobby is free message later
-    }
-  }, 10000);
 });
 
 client.on('message', msg => {
@@ -80,8 +94,7 @@ client.on('message', msg => {
      bobbyEmbed.setImage('https://www.mypokecard.com/en/Gallery/my/galery/AUFz107M7SKK.jpg')
      msg.channel.send(bobbyEmbed)
      // Calculate time till bobby is free
-     var daysLeft = Math.round(shmurdaTimeLeft/(1000*60*60*24));
-     msg.channel.send("Only " + String(daysLeft) + " days left till Bobby is free!");
+     msg.channel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
    }
   }
   // homo simpians
