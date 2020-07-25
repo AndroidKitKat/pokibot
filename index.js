@@ -1,9 +1,8 @@
 const Discord = require('discord.js');
 const client = new Discord.Client();
-const bobbyTime = new Schedule(sendBobbyMessage)
 const fetch = require('node-fetch')
 const Schedule = require('schedule-js')
-
+const bobbyTime = new Schedule(sendBobbyMessage)
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 
