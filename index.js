@@ -5,6 +5,7 @@ const fetch = require('node-fetch')
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 
+var cmdPrefix = "!p";
 var alertSent = false
 
 client.on('ready', () => {
@@ -39,7 +40,22 @@ https://twitch.tv/pokimane`)
 });
 
 client.on('message', msg => {
-  // commands here
+  // Simple say command
+  var msgArray = msg.content.split(" ");
+  var prefix = "";
+  var command = "";
+
+  // Get the prefix and the command
+  if (msgArray.length >= 2) {
+    prefix = msgArray.shift();
+    command = msgArray.shift();
+  }
+
+  if (prefix === cmdPrefix) { // Only look at messages with the correct command prefix
+    if (command === "hello") {
+      msg.channel.send("hello");
+    }
+  }
 });
 
 
