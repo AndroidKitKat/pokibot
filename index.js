@@ -5,6 +5,8 @@ const fetch = require('node-fetch')
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 
+var releaseDate = new Date(2020, 11, 11, 0, 0, 0, 0); // Day bobby shmurda is released
+var shmurdaTimeLeft = 1;
 var cmdPrefix = "!p";
 var alertSent = false
 
@@ -36,7 +38,14 @@ https://twitch.tv/pokimane`)
           }
         }
     })
-  }, 5000)
+  }, 5000);
+  setInterval(function() { // Function that updates time till bobby is released
+    var currentDate = new Date();
+    var shmurdaTimeLeft = releaseDate - currentDate;
+    if (shmurdaTimeLeft <= 0) {
+      shmurdaTimeLeft = 0; // Will add logic to send a bobby is free message later
+    }
+  }, 10000);
 });
 
 client.on('message', msg => {
@@ -65,6 +74,9 @@ client.on('message', msg => {
      bobbyEmbed.setDescription('Nah, pokemon')
      bobbyEmbed.setImage('https://www.mypokecard.com/en/Gallery/my/galery/AUFz107M7SKK.jpg')
      msg.channel.send(bobbyEmbed)
+     // Calculate time till bobby is free
+     var daysLeft = Math.round(shmurdaTimeLeft/(1000*60*60*24));
+     msg.channel.send("Only " + String(daysLeft) + " days left till Bobby is free!");
    }
   }
   // homo simpians
