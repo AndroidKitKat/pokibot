@@ -97,7 +97,7 @@ client.on('message', msg => {
   }
 
   //duckduckgo search
-  if (prefix === '!ddg') {
+  if (prefix === '!g') {
     const duckQuery = command + ' ' + msgArray.join(' ')
     sec.bing(duckQuery).then(function(result){
       msg.channel.send(result.links[1]);
