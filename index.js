@@ -16,13 +16,13 @@ var simpChannel
 var cmdPrefix = '!p'
 var alertSent = false
 
-function calcBobbyTime () {
+function calcBobbyTime() {
   const releaseDate = moment('2020.12.11', 'YYYY.MM.DD')
   const rn = moment()
   return releaseDate.diff(rn, 'days')
 }
 
-function calcRowdyTime () {
+function calcRowdyTime() {
   const rReleaseDate = moment('2020.12.15', 'YYYY.MM.DD')
   const rn = moment()
   return rReleaseDate.diff(rn, 'days')
@@ -34,13 +34,13 @@ client.on('ready', () => {
   simpChannel = client.channels.cache.get('690014059663458310')
   bobbyChannel = client.channels.cache.get('736706894667841626')
 
-  var freeBobbyMessage = new CronJob('0 0 * * *', function () {
+  var freeBobbyMessage = new CronJob('0 0 * * *', function() {
     bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
     console.log('fired bobby message')
   }, null, true)
 
   freeBobbyMessage.start()
-  setInterval(function () {
+  setInterval(function() {
     const pokiStreamUrl = 'https://api.twitch.tv/kraken/streams/44445592'
     fetch(pokiStreamUrl, {
       headers: {
@@ -74,7 +74,7 @@ https://twitch.tv/pokimane`)
   }, 5000)
 })
 
-function dpSearch (type, query) {
+function dpSearch(type, query) {
   var baseSearchUrl = 'https://www.dogpile.com/search/'
   if (type === 'web') {
     baseSearchUrl = baseSearchUrl + 'web?q='
@@ -150,6 +150,39 @@ client.on('message', msg => {
     const imageQuery = command + ' ' + msgArray.join(' ')
     dpSearch('image', imageQuery).then((searchResult) => {
       msg.channel.send(searchResult)
+    })
+  }
+
+  // reddit stuff
+  if (prefix === '!r') {
+    const subreddit = command
+    // make sure the user doesn't do anything stupid
+    if (msgArray.length > 0) {
+      msg.channel.send('Hey, sooo you can\'t have a sub name longer than one word. Try again ^.^')
+      return
+    } else if (subreddit.length > 21) {
+      msg.channel.send('Hey, soooo subreddit names can\'t be that long. Try again :pokishy:')
+      return
+    }
+    var redditUrl = 'https://reddit.com/r/' + subreddit + '/.json'
+    fetch(redditUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15'
+      }
+    }).then((response) => {
+      return response.json()
+    }).then((data) => {
+      var postList = data.data.children
+      var redditEmbed = new Discord.MessageEmbed()
+      // console.log(data)
+      var post = postList[Math.floor(Math.random() * postList.length)]
+      redditEmbed.setURL(post.data.url)
+      redditEmbed.setTitle(post.data.title)
+      // trim selftext to be less than 1024 chars
+      redditEmbed.setDescription(post.data.selftext.substr(0, 1024))
+      redditEmbed.setColor('#B7E7A8')
+      redditEmbed.setImage(post.data.thumbnail)
+      msg.channel.send(redditEmbed)
     })
   }
   // free bobby!
