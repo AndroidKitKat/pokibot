@@ -181,7 +181,9 @@ client.on('message', msg => {
       // trim selftext to be less than 1024 chars
       redditEmbed.setDescription(post.data.selftext.substr(0, 1024))
       redditEmbed.setColor('#B7E7A8')
-      redditEmbed.setImage(post.data.thumbnail)
+      if (post.data.thumbnail !== 'self') {
+        redditEmbed.setImage(post.data.thumbnail)
+      }
       msg.channel.send(redditEmbed)
     })
   }
