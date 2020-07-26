@@ -1,8 +1,10 @@
 const Discord = require('discord.js');
 const moment = require('moment')
-const sec = require('search-engine-client-detailed')
 const fetch = require('node-fetch');
 const { CronJob } = require('cron');
+const urlencode = require('urlencode')
+const jsdom = require("jsdom");
+const { JSDOM } = jsdom;
 const cron = require('cron').CronJob
 const client = new Discord.Client();
 const discordToken = process.env.DISCORD_BOT_TOKEN
@@ -72,10 +74,51 @@ https://twitch.tv/pokimane`)
   }, 5000);
 });
 
+function dpSearch(type, query) {
+  var baseSearchUrl = 'https://www.dogpile.com/search/'
+  if (type === 'web') {
+    baseSearchUrl = baseSearchUrl + 'web?q='
+  } else if (type === 'image') {
+    baseSearchUrl = baseSearchUrl + 'images?q='
+  }
+  const searchQuery = urlencode(query)
+  const searchUrl = baseSearchUrl + searchQuery
 
-function sendBobbyMessage() {
+  // now we have to make the request and parse the html
+  if (type === 'image') {
+    return fetch(searchUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15',
+      }
+    }).then((res) => {
+      return res.text()
+    }).then((data) => {
+      const dom = new JSDOM(data)
+      var results = dom.window.document.getElementsByClassName('link')
+      if (results.length == 0) {
+        return 'No results.'
+      } else {
+        return results[0].href
+      }
+    })
+  } else {
+    return fetch(searchUrl, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15',
+      }
+    }).then((res) => {
+      return res.text()
+    }).then((data) => {
+      const dom = new JSDOM(data)
+      var results = dom.window.document.getElementsByClassName('web-bing__url')
+      if (results.length == 0) {
+        return 'No results.'
+      } else {
+        return results[0].innerHTML
+      }
+    })
+  }
 }
-
 
 // essentially bot commands
 client.on('message', msg => {
@@ -96,12 +139,20 @@ client.on('message', msg => {
 
   }
 
-  //duckduckgo search
+  //dogpile search
   if (prefix === '!g') {
     const duckQuery = command + ' ' + msgArray.join(' ')
-    sec.bing(duckQuery).then(function(result){
-      msg.channel.send(result.links[1]);
-  });
+    dpSearch('web', duckQuery).then((searchResult) => {
+      msg.channel.send(searchResult)
+    })
+    
+  }
+  //dogpile image search
+  if (prefix === '!gis') {
+    const imageQuery = command + ' ' + msgArray.join(' ')
+    dpSearch('image', imageQuery).then((searchResult) => {
+      msg.channel.send(searchResult)
+    })
   }
   // free bobby!
   if (prefix === '!free') {
