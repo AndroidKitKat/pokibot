@@ -98,7 +98,7 @@ function dpSearch (type, query) {
       if (results.length === 0) {
         return 'No results.'
       } else {
-        return results[0].href
+        return results[Math.floor(Math.random() * results.length)].href
       }
     })
   } else {
@@ -114,7 +114,7 @@ function dpSearch (type, query) {
       if (results.length === 0) {
         return 'No results.'
       } else {
-        return results[0].innerHTML
+        return results[Math.floor(Math.random() * results.length)].innerHTML
       }
     })
   }
