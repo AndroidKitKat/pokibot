@@ -1,5 +1,6 @@
 const Discord = require('discord.js');
 const moment = require('moment')
+const sec = require('search-engine-client-detailed')
 const fetch = require('node-fetch');
 const { CronJob } = require('cron');
 const cron = require('cron').CronJob
@@ -75,6 +76,7 @@ https://twitch.tv/pokimane`)
 function sendBobbyMessage() {
 }
 
+
 // essentially bot commands
 client.on('message', msg => {
   // Simple say command
@@ -92,6 +94,14 @@ client.on('message', msg => {
   if (msgArray.join(' ') === '!help') {
     msg.author.send('read the code: https://github.com/AndroidKitKat/pokibot')
 
+  }
+
+  //duckduckgo search
+  if (prefix === '!ddg') {
+    const duckQuery = command + ' ' + msgArray.join(' ')
+    sec.bing(duckQuery).then(function(result){
+      msg.channel.send(result.links[1]);
+  });
   }
   // free bobby!
   if (prefix === '!free') {

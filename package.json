@@ -6,6 +6,7 @@
     "discord.js": "^12.2.0",
     "eslint": "^7.5.0",
     "moment": "^2.27.0",
-    "node-fetch": "^2.6.0"
+    "node-fetch": "^2.6.0",
+    "search-engine-client-detailed": "^0.1.0"
   }
 }
