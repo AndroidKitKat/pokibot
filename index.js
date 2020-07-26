@@ -5,9 +5,9 @@ const { CronJob } = require('cron')
 const urlencode = require('urlencode')
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
-const {Users, CurrencyShop } = require('./dbObjects');
-const { Op } = require('sequelize');
-const currency = new Discord.Collection();
+const { Op } = require('sequelize')
+const { Users, CurrencyShop } = require('./dbObjects')
+const currency = new Discord.Collection()
 
 // eslint-disable-next-line no-unused-vars
 const cron = require('cron').CronJob
@@ -22,24 +22,27 @@ var alertSent = false
 
 // Define methods in collection
 Reflect.defineProperty(currency, 'add', {
-	value: async function add(id, amount) {
-		const user = currency.get(id);
-		if (user) {
-			user.balance += Number(amount);
-			return user.save();
-		}
-		const newUser = await Users.create({ user_id: id, balance: amount });
-		currency.set(id, newUser);
-		return newUser;
-	},
-});
+  value: async function add(id, amount) {
+    const user = currency.get(id)
+    if (user) {
+      user.balance += Number(amount)
+      return user.save()
+    }
+    const newUser = await Users.create({
+      user_id: id,
+      balance: amount
+    })
+    currency.set(id, newUser)
+    return newUser
+  }
+})
 
 Reflect.defineProperty(currency, 'getBalance', {
-	value: function getBalance(id) {
-		const user = currency.get(id);
-		return user ? user.balance : 0;
-	},
-});
+  value: function getBalance(id) {
+    const user = currency.get(id)
+    return user ? user.balance : 0
+  }
+})
 
 function calcBobbyTime() {
   const releaseDate = moment('2020.12.11', 'YYYY.MM.DD')
@@ -59,8 +62,9 @@ client.on('ready', () => {
   simpChannel = client.channels.cache.get('690014059663458310')
   bobbyChannel = client.channels.cache.get('736706894667841626')
 
-  const storedBalances = await Users.findAll();
-  storedBalances.forEach(b => currency.set(b.user_id, b));
+  Users.findAll().then((balances) => {
+    balances.forEach(b => currency.set(b.user_id, b))
+  })
 
   var freeBobbyMessage = new CronJob('0 0 * * *', function() {
     bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
@@ -150,8 +154,7 @@ function dpSearch(type, query) {
 
 // essentially bot commands
 client.on('message', msg => {
-
-  currency.add(message.author.id, 1);
+  currency.add(msg.author.id, 1)
   // Simple say command
   var msgArray = msg.content.split(' ')
   var prefix = ''
@@ -168,10 +171,10 @@ client.on('message', msg => {
     msg.author.send('read the code: https://github.com/AndroidKitKat/pokibot')
   }
 
-  if (prefix === "!b") {
+  if (prefix === '!b') {
     if (command === 'balance') {
-      const target = message.mentions.users.first() || message.author;
-      return message.channel.send(`${target.tag} has ${currency.getBalance(target.id)}💰`);
+      const target = msg.mentions.users.first() || msg.author
+      return msg.channel.send(`${target.tag} has ${currency.getBalance(target.id)}💰`)
     }
   }
 
