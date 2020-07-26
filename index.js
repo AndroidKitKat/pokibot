@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const moment = require('moment')
 const fetch = require('node-fetch');
 const { CronJob } = require('cron');
 const cron = require('cron').CronJob
@@ -12,14 +13,15 @@ var cmdPrefix = "!p";
 var alertSent = false
 
 function calcBobbyTime() {
-  // how much is one day?
-  const oneDay = 24 * 60 * 60 * 1000
-  // bobby is free on this day
-  const releaseDate = new Date(2020, 11, 11)
-  // what is the current date?
-  const today = new Date()
-  const timeLeft = Math.round(Math.abs((releaseDate - today) / oneDay))
-  return timeLeft
+  const releaseDate = moment('2020.12.11', 'YYYY.MM.DD')
+  const rn = moment()
+  return releaseDate.diff(rn, 'days')
+}
+
+function calcRowdyTime() {
+  const rReleaseDate = moment('2020.12.15', 'YYYY.MM.DD')
+  const rn = moment()
+  return rReleaseDate.diff(rn, 'days')
 }
 
 
@@ -102,6 +104,8 @@ client.on('message', msg => {
      msg.channel.send(bobbyEmbed)
      // Calculate time till bobby is free
      msg.channel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
+   } else if (command === 'rowdy') {
+     msg.channel.send(`Rowdy will be free in ${calcRowdyTime()} days!`)
    }
   }
   // homo simpians
