@@ -1,4 +1,5 @@
-const Sequelize = require('sequelize')
+
+require('./models/')(sequelize, Sequelize)
 
 const sequelize = new Sequelize('database', 'username', 'password', {
   host: 'localhost',
