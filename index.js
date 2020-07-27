@@ -43,6 +43,7 @@ client.on('ready', () => {
   simpChannel = client.channels.cache.get('690014059663458310')
   bobbyChannel = client.channels.cache.get('736706894667841626')
   pokiDb = mognoClient.connect()
+  console.log('db connected')
 
   var freeBobbyMessage = new CronJob('0 0 * * *', function() {
     bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
