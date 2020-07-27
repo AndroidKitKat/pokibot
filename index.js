@@ -1,7 +1,7 @@
 const Discord = require('discord.js')
 const moment = require('moment')
 const fetch = require('node-fetch')
-const responses = require("./botResponses.json")
+const responses = require('./botResponses.json')
 const { CronJob } = require('cron')
 const urlencode = require('urlencode')
 const jsdom = require('jsdom')
@@ -42,16 +42,15 @@ function calcRowdyTime() {
 
 // Helper function which creates an embedded message from Json data
 function createJsonEmbed(embedType) {
-  emData = responses.embeded[embedType];
+  var emData = responses.embeded[embedType]
   const newEmbed = new Discord.MessageEmbed()
   if (!emData) {
-    newEmbed.setDescription("Embedding failed :(");
-  }
-  else {
-    newEmbed.setTitle(emData.title);
-    newEmbed.setDescription(emData.message);
-    newEmbed.setColor(emData.color);
-    newEmbed.setImage(emData.image);
+    newEmbed.setDescription('Embedding failed :(')
+  } else {
+    newEmbed.setTitle(emData.title)
+    newEmbed.setDescription(emData.message)
+    newEmbed.setColor(emData.color)
+    newEmbed.setImage(emData.image)
   }
   return newEmbed
 }
@@ -61,8 +60,8 @@ client.on('ready', () => {
   console.log('started bobby cronjob')
   simpChannel = client.channels.cache.get(simpChannelId)
   bobbyChannel = client.channels.cache.get(bobbyChannelId)
-  pokiDb = mognoClient.connect();
-  console.log('db connected');
+  pokiDb = mognoClient.connect()
+  console.log('db connected')
 
   var freeBobbyMessage = new CronJob('0 0 * * *', function() {
     bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
@@ -237,7 +236,7 @@ client.on('message', msg => {
   // free bobby!
   if (prefix === '!free') {
     if (command === 'bobby') {
-      msg.channel.send(createJsonEmbed("free bobby"));
+      msg.channel.send(createJsonEmbed('free bobby'))
       // Calculate time till bobby is free
       msg.channel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
     } else if (command === 'rowdy') {
@@ -247,7 +246,7 @@ client.on('message', msg => {
   // homo simpians
   if (prefix === '!simp') {
     if (command === 'alert') {
-      msg.channel.send(createJsonEmbed("simp alert"));
+      msg.channel.send(createJsonEmbed('simp alert'))
     }
   }
 
@@ -269,11 +268,11 @@ client.on('message', msg => {
         t3embed.setDescription(`I reaaallllyyy appreciate the sub <@${msg.author.id}>.`)
         t3embed.setImage('https://media.tenor.com/images/0de2b320fc290bd68a63f55431f9bf4f/tenor.gif')
         msg.channel.send(t3embed)
-        msg.channel.send(createJsonEmbed("tier 3"))
+        msg.channel.send(createJsonEmbed('tier 3'))
       } else if (msgArray.join(' ').toLowerCase() === 'tier 2') {
-        msg.channel.send(createJsonEmbed("tier 2"));
+        msg.channel.send(createJsonEmbed('tier 2'))
       } else if (msgArray.join(' ').toLowerCase() === 'tier 1') {
-        msg.channel.send(createJsonEmbed("tier 1"));
+        msg.channel.send(createJsonEmbed('tier 1'))
       }
     } else if (command === 'pokigasm') {
       var gasmEmbed = new Discord.MessageEmbed()
@@ -285,7 +284,7 @@ client.on('message', msg => {
     } else if (command === 'send') {
       if (msgArray.join(' ') === 'feet pics maybe?') {
         // Add method to pirchase feet pics
-        msg.channel.send(createJsonEmbed("feet pics"));
+        msg.channel.send(createJsonEmbed('feet pics'))
       }
     } else if (command === 'donated') {
       // check how much a user has donated
@@ -300,7 +299,7 @@ client.on('message', msg => {
       } else {
         targetId = msgArray[0].replace(/\D/g, '')
       }
-      // query the db 
+      // query the db
       pokiDb.then(mango => {
         var pokiDollarDb = mango.db().collection('pokidollars')
         // update the db, making the user if they don't already exist!
@@ -319,8 +318,8 @@ client.on('message', msg => {
         })
       })
     } else { // Otherwise select an invalid command
-        msg.channel.send(responses.invalidCommand[Math.floor(Math.random() * responses.invalidCommand.length)]);
-    } 
+      msg.channel.send(responses.invalidCommand[Math.floor(Math.random() * responses.invalidCommand.length)])
+    }
   }
 })
 

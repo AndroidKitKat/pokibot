@@ -43,6 +43,11 @@ module.exports = {
         ignoreTemplateLiterals: true,
         ignoreRegExpLiterals: true
       }
-    ]
+    ],
+    'comma-dangle': ['error', {
+      'arrays': 'always',
+      'objects': 'only-multiline',
+      'functions': 'never'
+  }]
   }
 }
