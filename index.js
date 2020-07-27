@@ -26,7 +26,6 @@ const mognoClient = new MongoClient(`mongodb+srv://${mongoURI}?retryWrites=true&
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
-const pokiDb = 'pokidb'
 
 function calcBobbyTime() {
   const releaseDate = moment('2020.12.11', 'YYYY.MM.DD')
@@ -138,8 +137,8 @@ client.on('message', msg => {
   if (msg.author.id === '736317960691515412') {
     return
   }
-
-  mognoClient.connect().then(mango => {
+  // increment the pokidollars
+  pokiDb.then(mango => {
     var pokiDollarDb = mango.db().collection('pokidollars')
     // update the db, making the user if they don't already exist!
     pokiDollarDb.findOneAndUpdate(
@@ -198,6 +197,9 @@ client.on('message', msg => {
     }).then((response) => {
       return response.json()
     }).then((data) => {
+      if (data.data.children.length === 0) {
+        msg.channel.send('Hmmmmmmm, I can\'t seem to find that sub. Try again?')
+      }
       var postList = data.data.children
       var redditEmbed = new Discord.MessageEmbed()
       var post = postList[Math.floor(Math.random() * postList.length)]
@@ -290,13 +292,38 @@ client.on('message', msg => {
       }
     } else if (command === 'donated') {
       // check how much a user has donated
-      mognoClient.connect().then(mango => {
+      // see if user was supplied (msgArray will contain a nick)
+      var targetId = ''
+      if (msgArray.length > 1) {
+        msg.channel.send('Silly, you can\'t provide more than one nick *nuzzles you*')
+        return
+      } else if (msgArray.length === 0) {
+        targetId = msg.author.id
+      } else {
+        targetId = msgArray[0].replace(/\D/g, '')
+      }
+      // query the db
+      var donatePhases = [
+        ', but feel free to donate more :)',
+        ', keep trying to donate more! Every bit helps! <3',
+        ' and I realllllly appreciate it.',
+        ', but it\'s not about the money, I just enjoy chatting with you :kissing_heart:'
+      ]
+      pokiDb.then(mango => {
         var pokiDollarDb = mango.db().collection('pokidollars')
         // update the db, making the user if they don't already exist!
         pokiDollarDb.findOne(
-          { discordId: msg.author.id }
-        ).then((userInfo) => {
-          msg.reply(` you have $${userInfo.pokidollars}`)
+          { discordId: targetId }
+        ).then((userInfo, err) => {
+          if (err) {
+            msg.channel.send(`Hmmmm, I don't remember them donating anything. Maybe I didn't see it?`)
+            return
+          }
+          if (userInfo === null) {
+            msg.channel.send(`Hmmmm, I don't remember them donating anything. Maybe I didn't see it on my screen? Tee hee.`)
+            return
+          }
+          msg.channel.send(`<@!${targetId}> has $${userInfo.pokidollars}${donatePhases[Math.floor(Math.random() * donatePhases.length)]}`)
         })
       })
     }
