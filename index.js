@@ -1,6 +1,7 @@
 const Discord = require('discord.js')
 const moment = require('moment')
 const fetch = require('node-fetch')
+const responses = require("./botResponses.json")
 const { CronJob } = require('cron')
 const urlencode = require('urlencode')
 const jsdom = require('jsdom')
@@ -12,6 +13,9 @@ const client = new Discord.Client()
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 const mongoURI = process.env.MONGO_DB_URI
+console.log(discordToken);
+const simpChannelId = '690014059663458310'
+const bobbyChannelId = '736706894667841626'
 
 var bobbyChannel
 var simpChannel
@@ -37,13 +41,29 @@ function calcRowdyTime() {
   return rReleaseDate.diff(rn, 'days')
 }
 
+// Helper function which creates an embedded message from Json data
+function createJsonEmbed(embedType) {
+  emData = responses.embeded[embedType];
+  const newEmbed = new Discord.MessageEmbed()
+  if (!emData) {
+    newEmbed.setDescription("Embedding failed :(");
+  }
+  else {
+    newEmbed.setTitle(emData.title);
+    newEmbed.setDescription(emData.message);
+    newEmbed.setColor(emData.color);
+    newEmbed.setImage(emData.image);
+  }
+  return newEmbed
+}
+
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
   console.log('started bobby cronjob')
-  simpChannel = client.channels.cache.get('690014059663458310')
-  bobbyChannel = client.channels.cache.get('736706894667841626')
-  pokiDb = mognoClient.connect()
-  console.log('db connected')
+  simpChannel = client.channels.cache.get(simpChannelId)
+  bobbyChannel = client.channels.cache.get(bobbyChannelId)
+  pokiDb = mognoClient.connect();
+  console.log('db connected');
 
   var freeBobbyMessage = new CronJob('0 0 * * *', function() {
     bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
@@ -160,7 +180,7 @@ client.on('message', msg => {
 
   // help
   if (msgArray.join(' ') === '!help') {
-    msg.author.send('read the code: https://github.com/AndroidKitKat/pokibot')
+    msg.author.send(responses.help)
   }
 
   // dogpile search
@@ -183,10 +203,10 @@ client.on('message', msg => {
     const subreddit = command
     // make sure the user doesn't do anything stupid
     if (msgArray.length > 0) {
-      msg.channel.send('Hey, sooo you can\'t have a sub name longer than one word. Try again ^.^')
+      msg.channel.send(responses.reddit.invalidArgs1)
       return
     } else if (subreddit.length > 21) {
-      msg.channel.send('Hey, soooo subreddit names can\'t be that long. Try again :pokishy:')
+      msg.channel.send(responses.reddit.invalidArgs2)
       return
     }
     var redditUrl = 'https://reddit.com/r/' + subreddit + '/.json'
@@ -198,7 +218,7 @@ client.on('message', msg => {
       return response.json()
     }).then((data) => {
       if (data.data.children.length === 0) {
-        msg.channel.send('Hmmmmmmm, I can\'t seem to find that sub. Try again?')
+        msg.channel.send(responses.reddit.noSubreddit)
         return
       }
       var postList = data.data.children
@@ -218,12 +238,7 @@ client.on('message', msg => {
   // free bobby!
   if (prefix === '!free') {
     if (command === 'bobby') {
-      var bobbyEmbed = new Discord.MessageEmbed()
-      bobbyEmbed.setColor('#eb3327')
-      bobbyEmbed.setTitle('Pokimane?')
-      bobbyEmbed.setDescription('Nah, pokemon')
-      bobbyEmbed.setImage('https://www.mypokecard.com/en/Gallery/my/galery/AUFz107M7SKK.jpg')
-      msg.channel.send(bobbyEmbed)
+      msg.channel.send(createJsonEmbed("free bobby"));
       // Calculate time till bobby is free
       msg.channel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
     } else if (command === 'rowdy') {
@@ -233,12 +248,7 @@ client.on('message', msg => {
   // homo simpians
   if (prefix === '!simp') {
     if (command === 'alert') {
-      var simpEmbed = new Discord.MessageEmbed()
-      simpEmbed.setColor('#b970df')
-      simpEmbed.setTitle('Hey man')
-      simpEmbed.setDescription('We only simp ironically here')
-      simpEmbed.setImage('https://dxt.resized.co/dexerto/eyJkYXRhIjoie1widXJsXCI6XCJodHRwczpcXFwvXFxcL2ltYWdlcy5kZXhlcnRvLmNvbVxcXC91cGxvYWRzXFxcLzIwMjBcXFwvMDZcXFwvMzAyMTQ1MTlcXFwvcG9raW1hbmVjb21tZW50c2ltcGFubm95aW5nLmdpZlwiLFwid2lkdGhcIjo2MjAsXCJoZWlnaHRcIjozNDcsXCJkZWZhdWx0XCI6XCJodHRwczpcXFwvXFxcL2ltYWdlcy5kZXhlcnRvLmNvbVxcXC91cGxvYWRzXFxcLzIwMTlcXFwvMTFcXFwvMTEyMTQ5NDNcXFwvcGxhY2Vob2xkZXIuanBnXCIsXCJvcHRpb25zXCI6e1wib3V0cHV0XCI6XCJ3ZWJwXCJ9fSIsImhhc2giOiJmNjk1Y2Y2MGZkOGQ2MjdiYTBlNGE5NTU5YWE2ZWIwYThlZGE4MzdlIn0=/pokimane-reveals-how-she-deals-with-annoying-online-simp-comments.gif')
-      msg.channel.send(simpEmbed)
+      msg.channel.send(createJsonEmbed("simp alert"));
     }
   }
 
@@ -260,20 +270,11 @@ client.on('message', msg => {
         t3embed.setDescription(`I reaaallllyyy appreciate the sub <@${msg.author.id}>.`)
         t3embed.setImage('https://media.tenor.com/images/0de2b320fc290bd68a63f55431f9bf4f/tenor.gif')
         msg.channel.send(t3embed)
+        msg.channel.send(createJsonEmbed("tier 3"))
       } else if (msgArray.join(' ').toLowerCase() === 'tier 2') {
-        const t2embed = new Discord.MessageEmbed()
-        t2embed.setTitle('Thanks for the sub')
-        t2embed.setColor('#b970df')
-        t2embed.setDescription('Thanks, but it won\'t buy me a new computer')
-        t2embed.setImage('https://thumbs.gfycat.com/BlissfulBriefAngwantibo-max-1mb.gif')
-        msg.channel.send(t2embed)
+        msg.channel.send(createJsonEmbed("tier 2"));
       } else if (msgArray.join(' ').toLowerCase() === 'tier 1') {
-        const t1embed = new Discord.MessageEmbed()
-        t1embed.setTitle('...')
-        t1embed.setColor('#b970df')
-        t1embed.setDescription('Thanks, I guess...')
-        t1embed.setImage('https://www.talkesport.com/wp-content/uploads/tenor-1.gif')
-        msg.channel.send(t1embed)
+        msg.channel.send(createJsonEmbed("tier 1"));
       }
     } else if (command === 'pokigasm') {
       var gasmEmbed = new Discord.MessageEmbed()
@@ -284,32 +285,23 @@ client.on('message', msg => {
       msg.channel.send(gasmEmbed)
     } else if (command === 'send') {
       if (msgArray.join(' ') === 'feet pics maybe?') {
-        var feetEmbed = new Discord.MessageEmbed()
-        feetEmbed.setColor('#b970df')
-        feetEmbed.setTitle('Well...')
-        feetEmbed.setDescription('You did donate soooo....')
-        feetEmbed.setImage('https://i.redd.it/skd0krqm35x31.gif')
-        msg.channel.send(feetEmbed)
+        // Add method to pirchase feet pics
+        msg.channel.send(createJsonEmbed("feet pics"));
       }
     } else if (command === 'donated') {
       // check how much a user has donated
       // see if user was supplied (msgArray will contain a nick)
+      var donoResponses = responses.donated;
       var targetId = ''
       if (msgArray.length > 1) {
-        msg.channel.send('Silly, you can\'t provide more than one nick *nuzzles you*')
+        msg.channel.send(donoResponses.invalidArgs)
         return
       } else if (msgArray.length === 0) {
         targetId = msg.author.id
       } else {
         targetId = msgArray[0].replace(/\D/g, '')
       }
-      // query the db
-      var donatePhases = [
-        ', but feel free to donate more :)',
-        ', keep trying to donate more! Every bit helps! <3',
-        ' and I realllllly appreciate it.',
-        ', but it\'s not about the money, I just enjoy chatting with you :kissing_heart:'
-      ]
+      // query the db 
       pokiDb.then(mango => {
         var pokiDollarDb = mango.db().collection('pokidollars')
         // update the db, making the user if they don't already exist!
@@ -317,17 +309,19 @@ client.on('message', msg => {
           { discordId: targetId }
         ).then((userInfo, err) => {
           if (err) {
-            msg.channel.send(`Hmmmm, I don't remember them donating anything. Maybe I didn't see it?`)
+            msg.channel.send(donoResponses.userError)
             return
           }
           if (userInfo === null) {
-            msg.channel.send(`Hmmmm, I don't remember them donating anything. Maybe I didn't see it on my screen? Tee hee.`)
+            msg.channel.send(donoResponses.userError)
             return
           }
-          msg.channel.send(`<@!${targetId}> has $${userInfo.pokidollars}${donatePhases[Math.floor(Math.random() * donatePhases.length)]}`)
+          msg.channel.send(`<@!${targetId}> has $${userInfo.pokidollars}${responses.donatePhrases[Math.floor(Math.random() * responses.donatePhrases.length)]}`)
         })
       })
-    }
+    } else { // Otherwise select an invalid command
+        msg.channel.send(responses.invalidCommand[Math.floor(Math.random() * responses.invalidCommand.length)]);
+    } 
   }
 })
 
