@@ -12,6 +12,9 @@ const client = new Discord.Client()
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 const mongoURI = process.env.MONGO_DB_URI
+console.log(discordToken);
+const simpChannelId = '690014059663458310'
+const bobbyChannelId = '736706894667841626'
 
 var bobbyChannel
 var simpChannel
@@ -19,7 +22,7 @@ var cmdPrefix = '!p'
 var alertSent = false
 
 // mongo
-const mognoClient = new MongoClient(`mongodb://${mongoURI}?retryWrites=true&w=majority`, {
+const mognoClient = new MongoClient(`mongodb+srv://${mongoURI}?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -40,8 +43,8 @@ function calcRowdyTime() {
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
   console.log('started bobby cronjob')
-  simpChannel = client.channels.cache.get('690014059663458310')
-  bobbyChannel = client.channels.cache.get('736706894667841626')
+  simpChannel = client.channels.cache.get(simpChannelId)
+  bobbyChannel = client.channels.cache.get(bobbyChannelId)
 
   var freeBobbyMessage = new CronJob('0 0 * * *', function() {
     bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
