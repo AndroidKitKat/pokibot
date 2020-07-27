@@ -5,16 +5,25 @@ const { CronJob } = require('cron')
 const urlencode = require('urlencode')
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
+const { MongoClient } = require('mongodb')
 // eslint-disable-next-line no-unused-vars
 const cron = require('cron').CronJob
 const client = new Discord.Client()
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
+const mongoURI = process.env.MONGO_DB_URI
 
 var bobbyChannel
 var simpChannel
 var cmdPrefix = '!p'
 var alertSent = false
+
+// mongo
+const mognoClient = new MongoClient(`mongodb://${mongoURI}?retryWrites=true&w=majority`, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+const pokiDb = 'pokidb'
 
 function calcBobbyTime() {
   const releaseDate = moment('2020.12.11', 'YYYY.MM.DD')
@@ -122,7 +131,21 @@ function dpSearch(type, query) {
 
 // essentially bot commands
 client.on('message', msg => {
-  // Simple say command
+  // bot should ignore itself!
+  if (msg.author.id === '736317960691515412') {
+    return
+  }
+
+  mognoClient.connect().then(mango => {
+    var pokiDollarDb = mango.db().collection('pokidollars')
+    // update the db, making the user if they don't already exist!
+    pokiDollarDb.findOneAndUpdate(
+      { discordId: msg.author.id },
+      { $inc: { pokidollars: 1 } },
+      { upsert: true }
+    )
+  })
+
   var msgArray = msg.content.split(' ')
   var prefix = ''
   var command = ''
@@ -174,7 +197,6 @@ client.on('message', msg => {
     }).then((data) => {
       var postList = data.data.children
       var redditEmbed = new Discord.MessageEmbed()
-      // console.log(data)
       var post = postList[Math.floor(Math.random() * postList.length)]
       redditEmbed.setURL(post.data.url)
       redditEmbed.setTitle(post.data.title)
@@ -221,13 +243,12 @@ client.on('message', msg => {
       if (msgArray.length >= 1) {
         msg.channel.send(msgArray.join(' '))
       } else {
-        msg.channel.send('Hey you fucked up, give me something to say, !p say <message>')
+        msg.channel.send('Hey you messed up, hehe. Give me something to say, !p say <message>')
       }
     } else if (command === 'sub') {
       // check for the sub tiers
       if (msgArray.join(' ').toLowerCase() === 'tier 3') {
         const t3embed = new Discord.MessageEmbed()
-        console.log(msg)
         t3embed.setTitle('Thanks for the Sub ^_^')
         t3embed.setColor('#b970df')
         t3embed.setDescription(`I reaaallllyyy appreciate the sub <@${msg.author.id}>.`)
@@ -264,8 +285,20 @@ client.on('message', msg => {
         feetEmbed.setImage('https://i.redd.it/skd0krqm35x31.gif')
         msg.channel.send(feetEmbed)
       }
+    } else if (command === 'donated') {
+      // check how much a user has donated
+      mognoClient.connect().then(mango => {
+        var pokiDollarDb = mango.db().collection('pokidollars')
+        // update the db, making the user if they don't already exist!
+        pokiDollarDb.findOne(
+          { discordId: msg.author.id }
+        ).then((userInfo) => {
+          msg.reply(`, you have $${userInfo.pokidollars}`)
+        })
+      })
     }
   }
 })
 
+// start the bot
 client.login(discordToken)

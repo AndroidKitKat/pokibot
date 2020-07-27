@@ -6,6 +6,7 @@
     "discord.js": "^12.2.0",
     "jsdom": "^16.3.0",
     "moment": "^2.27.0",
+    "mongodb": "^3.5.9",
     "node-fetch": "^2.6.0",
     "urlencode": "^1.1.0"
   },
