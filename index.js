@@ -219,6 +219,7 @@ client.on('message', msg => {
     }).then((data) => {
       if (data.data.children.length === 0) {
         msg.channel.send(responses.reddit.noSubreddit)
+        return
       }
       var postList = data.data.children
       var redditEmbed = new Discord.MessageEmbed()
