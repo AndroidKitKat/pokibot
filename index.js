@@ -197,6 +197,9 @@ client.on('message', msg => {
     }).then((response) => {
       return response.json()
     }).then((data) => {
+      if (data.data.children.length === 0) {
+        msg.channel.send('Hmmmmmmm, I can\'t seem to find that sub. Try again?')
+      }
       var postList = data.data.children
       var redditEmbed = new Discord.MessageEmbed()
       var post = postList[Math.floor(Math.random() * postList.length)]
