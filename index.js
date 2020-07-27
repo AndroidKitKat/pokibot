@@ -199,6 +199,7 @@ client.on('message', msg => {
     }).then((data) => {
       if (data.data.children.length === 0) {
         msg.channel.send('Hmmmmmmm, I can\'t seem to find that sub. Try again?')
+        return
       }
       var postList = data.data.children
       var redditEmbed = new Discord.MessageEmbed()
