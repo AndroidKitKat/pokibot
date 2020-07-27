@@ -22,6 +22,7 @@ var cmdPrefix = '!p'
 var alertSent = false
 
 // mongo
+var pokiDb
 const mognoClient = new MongoClient(`mongodb+srv://${mongoURI}?retryWrites=true&w=majority`, {
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -44,6 +45,8 @@ client.on('ready', () => {
   console.log('started bobby cronjob')
   simpChannel = client.channels.cache.get(simpChannelId)
   bobbyChannel = client.channels.cache.get(bobbyChannelId)
+  pokiDb = mognoClient.connect();
+  console.log('db connected');
 
   var freeBobbyMessage = new CronJob('0 0 * * *', function() {
     bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
