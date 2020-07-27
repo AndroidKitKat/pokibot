@@ -13,7 +13,6 @@ const client = new Discord.Client()
 const discordToken = process.env.DISCORD_BOT_TOKEN
 const twitchToken = process.env.TWITCH_OAUTH_TOKEN
 const mongoURI = process.env.MONGO_DB_URI
-console.log(discordToken);
 const simpChannelId = '690014059663458310'
 const bobbyChannelId = '736706894667841626'
 
@@ -291,10 +290,10 @@ client.on('message', msg => {
     } else if (command === 'donated') {
       // check how much a user has donated
       // see if user was supplied (msgArray will contain a nick)
-      var donoResponses = responses.donated;
+      var donatedResponses = responses.donated
       var targetId = ''
       if (msgArray.length > 1) {
-        msg.channel.send(donoResponses.invalidArgs)
+        msg.channel.send(donatedResponses.invalidArgs)
         return
       } else if (msgArray.length === 0) {
         targetId = msg.author.id
@@ -309,14 +308,14 @@ client.on('message', msg => {
           { discordId: targetId }
         ).then((userInfo, err) => {
           if (err) {
-            msg.channel.send(donoResponses.userError)
+            msg.channel.send(donatedResponses.userError)
             return
           }
           if (userInfo === null) {
-            msg.channel.send(donoResponses.userError)
+            msg.channel.send(donatedResponses.userError)
             return
           }
-          msg.channel.send(`<@!${targetId}> has $${userInfo.pokidollars}${responses.donatePhrases[Math.floor(Math.random() * responses.donatePhrases.length)]}`)
+          msg.channel.send(`<@!${targetId}> has $${userInfo.pokidollars}${donatedResponses.donatePhrases[Math.floor(Math.random() * donatedResponses.donatePhrases.length)]}`)
         })
       })
     } else { // Otherwise select an invalid command

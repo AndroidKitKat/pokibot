@@ -53,10 +53,10 @@
         "invalidArgs" : "Silly, you can't provide more than one nick *nuzzles you*",
         "userError": "Hmmmm, I don't remember them donating anything. Maybe I didn't see it on my screen? Tee hee.",
         "donatePhrases": [
-            " but feel free to donate more :)",
-            " keep trying to donate more! Every bit helps! <3",
+            ", but feel free to donate more :)",
+            ". Keep trying to donate more! Every bit helps! <3",
             " and I realllllly appreciate it.",
-            " but it's not about the money, I just enjoy chatting with you :kissing_heart:"
+            ", but it's not about the money, I just enjoy chatting with you :kissing_heart:"
         ]
     }
 }
