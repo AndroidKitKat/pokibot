@@ -293,7 +293,7 @@ client.on('message', msg => {
         pokiDollarDb.findOne(
           { discordId: msg.author.id }
         ).then((userInfo) => {
-          msg.reply(`, you have $${userInfo.pokidollars}`)
+          msg.reply(` you have $${userInfo.pokidollars}`)
         })
       })
     }
