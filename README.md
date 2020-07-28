@@ -1,10 +1,11 @@
 make sure you have an evironment var for your Discord bot token and ur twitch api key
 
 Environment vars to set!
-DISCORD_BOT_TOKEN
-TWITCH_CLIENT_ID
-TWITCH_CLIENT_SECRET
-MONGO_DB_URL
+
+- DISCORD_BOT_TOKEN
+- TWITCH_CLIENT_ID
+- TWITCH_CLIENT_SECRET
+- MONGO_DB_URL
 
 
 
