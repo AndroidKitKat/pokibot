@@ -11,8 +11,9 @@ const { MongoClient } = require('mongodb')
 const cron = require('cron').CronJob
 const client = new Discord.Client()
 const discordToken = process.env.DISCORD_BOT_TOKEN
-const twitchToken = process.env.TWITCH_OAUTH_TOKEN
-const mongoURI = process.env.MONGO_DB_URI
+const twitchClientId = process.env.TWITCH_CLIENT_ID
+const twichClientSecret = process.env.TWITCH_CLIENT_SECRET
+const mongoURL = process.env.MONGO_DB_URL
 const simpChannelId = '690014059663458310'
 const bobbyChannelId = '736706894667841626'
 
@@ -23,7 +24,7 @@ var alertSent = false
 
 // mongo
 var pokiDb
-const mognoClient = new MongoClient(`mongodb://${mongoURI}?retryWrites=true&w=majority`, {
+const mognoClient = new MongoClient(mongoURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -55,6 +56,17 @@ function createJsonEmbed(embedType) {
   return newEmbed
 }
 
+async function getTwitchOauthToken() {
+  const oauthUrl = `https://id.twitch.tv/oauth2/token?client_id=${twitchClientId}&client_secret=${twichClientSecret}&grant_type=client_credentials`
+
+  var response = await fetch(oauthUrl, {
+    method: 'POST'
+  })
+
+  var data = await response.json()
+  return data.access_token
+}
+
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
   console.log('started bobby cronjob')
@@ -62,6 +74,8 @@ client.on('ready', () => {
   bobbyChannel = client.channels.cache.get(bobbyChannelId)
   pokiDb = mognoClient.connect()
   console.log('db connected')
+  const twitchToken = getTwitchOauthToken()
+  console.log('got twitch token!')
 
   var freeBobbyMessage = new CronJob('0 0 * * *', function() {
     bobbyChannel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
@@ -74,7 +88,7 @@ client.on('ready', () => {
     fetch(pokiStreamUrl, {
       headers: {
         Accept: 'application/vnd.twitchtv.v5+json',
-        'Client-ID': 'zfwmhzfmpxrhdoufl2cwf7z2iqlk6l',
+        'Client-ID': twitchClientId,
         Authorization: `Bearer ${twitchToken}`
       },
       method: 'GET'
@@ -83,18 +97,26 @@ client.on('ready', () => {
       .then(data => {
         if (data.stream == null) {
           client.user.setActivity('Not Pokimane', { type: 'WATCHING' })
+          // send message if poki goes offline
+          if (alertSent === true) {
+            console.log('poki is offline')
+            simpChannel.send('Poki is now offline.')
+          }
           alertSent = false
         } else {
-          client.user.setActivity('Pokimane', { type: 'WATCHING' })
+          client.user.setActivity(`Pokimane play ${data.stream.game}`, { type: 'WATCHING' })
           if (alertSent === false) {
             var liveEmbed = new Discord.MessageEmbed()
             liveEmbed.setColor('#eb3327')
-            liveEmbed.setTitle('@here, Pokimane is Live on Twitch!')
-            liveEmbed.setImage(data.stream.preview.large)
+            liveEmbed.setTitle('Pokimane is Live on Twitch!')
+            liveEmbed.setImage('https://i.imgur.com/Nqz0OJT.jpg')
             liveEmbed.setDescription(`Get your simp on!
 ${data.stream.channel.status}
 https://twitch.tv/pokimane`)
+            liveEmbed.setTimestamp()
+            liveEmbed.setFooter('Poki I love you please let me suck your toes')
             simpChannel.send(liveEmbed)
+            // simpChannel.send('@here ^^^^^^^^^')
             console.log('poki is now online')
             alertSent = true
           }
