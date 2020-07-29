@@ -6,6 +6,7 @@ module.exports = {
   info: {
     name: 'Reddit',
     desc: 'Gets post from reddit',
+    database: false,
     command: 'r',
     example: `!r mac
   > Returns a random post from the front page of /r/mac`
