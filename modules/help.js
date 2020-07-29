@@ -2,6 +2,7 @@ module.exports = {
   info: {
     name: 'Help',
     desc: 'Help module.',
+    database: false,
     command: 'help',
     example: `!help
   > Tells you to read the code`
