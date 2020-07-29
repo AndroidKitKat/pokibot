@@ -1,7 +1,6 @@
 const Discord = require('discord.js')
-const moment = require('moment')
 const fetch = require('node-fetch')
-const responses = require('./botResponses.json')
+const moment = require('moment')
 const { CronJob } = require('cron')
 const { MongoClient } = require('mongodb')
 const path = require('path')
@@ -43,26 +42,6 @@ function calcBobbyTime() {
   return releaseDate.diff(rn, 'days')
 }
 
-function calcRowdyTime() {
-  const rReleaseDate = moment('2020.12.15', 'YYYY.MM.DD')
-  const rn = moment()
-  return rReleaseDate.diff(rn, 'days')
-}
-
-// Helper function which creates an embedded message from Json data
-function createJsonEmbed(embedType) {
-  var emData = responses.embeded[embedType]
-  const newEmbed = new Discord.MessageEmbed()
-  if (!emData) {
-    newEmbed.setDescription('Embedding failed :(')
-  } else {
-    newEmbed.setTitle(emData.title)
-    newEmbed.setDescription(emData.message)
-    newEmbed.setColor(emData.color)
-    newEmbed.setImage(emData.image)
-  }
-  return newEmbed
-}
 
 async function getTwitchOauthToken() {
   const oauthUrl = `https://id.twitch.tv/oauth2/token?client_id=${twitchClientId}&client_secret=${twichClientSecret}&grant_type=client_credentials`
@@ -171,17 +150,6 @@ client.on('message', msg => {
   // return statement here to turn off the rest of the bot while testing
   return
 
-
-  // free bobby!
-  if (prefix === '!free') {
-    if (command === 'bobby') {
-      msg.channel.send(createJsonEmbed('free bobby'))
-      // Calculate time till bobby is free
-      msg.channel.send(`Bobby will be free in ${calcBobbyTime()} days!`)
-    } else if (command === 'rowdy') {
-      msg.channel.send(`Rowdy will be free in ${calcRowdyTime()} days!`)
-    }
-  }
   // homo simpians
   if (prefix === '!simp') {
     if (command === 'alert') {
