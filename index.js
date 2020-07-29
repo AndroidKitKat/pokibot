@@ -126,8 +126,8 @@ ${data.stream.channel.status}
 https://twitch.tv/pokimane`)
             liveEmbed.setTimestamp()
             liveEmbed.setFooter('Poki I love you please let me suck your toes')
-            simpChannel.send(liveEmbed)
-            simpChannel.send('@here ^')
+            // simpChannel.send(liveEmbed)
+            // simpChannel.send('@here ^')
             console.log('poki is now online')
             alertSent = true
           }
