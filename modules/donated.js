@@ -30,7 +30,7 @@ module.exports = {
           return
         }
         if (userInfo === null) {
-          msgData.send(donatePhrases.userError)
+          msgData.send(phrases.userError)
           return
         }
         msgData.channel.send(`<@!${targetId}> has $${userInfo.pokidollars}${phrases.donatePhrases[Math.floor(Math.random() * phrases.donatePhrases.length)]}`)
