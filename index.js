@@ -100,7 +100,7 @@ client.on('ready', () => {
           // send message if poki goes offline
           if (alertSent === true) {
             console.log('poki is offline')
-            simpChannel.send('Poki is now offline.')
+            // simpChannel.send('Poki is now offline.')
           }
           alertSent = false
         } else {
@@ -115,7 +115,7 @@ ${data.stream.channel.status}
 https://twitch.tv/pokimane`)
             liveEmbed.setTimestamp()
             liveEmbed.setFooter('Poki I love you please let me suck your toes')
-            simpChannel.send(liveEmbed)
+            // simpChannel.send(liveEmbed)
             // simpChannel.send('@here ^^^^^^^^^')
             console.log('poki is now online')
             alertSent = true
@@ -216,6 +216,83 @@ client.on('message', msg => {
     dpSearch('image', imageQuery).then((searchResult) => {
       msg.channel.send(searchResult)
     })
+  }
+
+  // quote system
+  if (prefix === '!quote') {
+    // commands for quotes
+    // * add ${quote body}
+    // * username ${number (random if not provided)}
+    // TODO fix this for server scope!
+
+    // new quote to be added
+    if (command.toLowerCase() === 'add') {
+      // dont strip the userId of the stuff for fact checking (do strip when entering)
+      var userId = msgArray.shift()
+      var newQuote = msgArray.join(' ')
+      // make sure the userId is real and quote isn't empty (this is only so foolproof)
+      if (!(/<@!\d*>/.test(userId))) {
+        msg.channel.send('Not a valid user!')
+        return
+      }
+      if (newQuote === '') {
+        msg.channel.send('Quote cannot be empty!')
+        return
+      }
+      // if we make it here we just need to put it in the DB
+      pokiDb.then(mango => {
+        var pokiQuoteDb = mango.db().collection('quotes')
+        // update the db, making the user if they don't already exist!
+        pokiQuoteDb.findOneAndUpdate(
+          { discordId: userId.replace(/\D/g, '') },
+          { $push: { quotes: newQuote } },
+          { upsert: true }
+        )
+        console.log('quote entered into db')
+      })
+    } else if (/<@!\d*>/.test(command)) {
+      var searchId = command.replace(/\D/g, '')
+      // if user provided a quote number, make sure it's actually a number
+      var quoteNum = msgArray[0]
+      // first check if arg was given
+      if (quoteNum !== undefined) {
+        // then check to make sure it's a number
+        if (isNaN(quoteNum)) {
+          msg.channel.send(`${quoteNum} is not a valid number`)
+          return
+        }
+      }
+      pokiDb.then(mango => {
+        var pokiQuoteDb = mango.db().collection('quotes')
+        pokiQuoteDb.findOne(
+          { discordId: searchId }
+        ).then((userInfo, err) => {
+          if (err) {
+            msg.channel.send(donatedResponses.userError)
+            return
+          }
+          if (userInfo === null) {
+            msg.channel.send(`<@!${searchId}> doesn't have any quotes. :/`)
+            return
+          }
+          if (quoteNum === undefined) {
+            var max = userInfo.quotes.length
+            var min = 1
+            quoteNum = Math.floor(Math.random() * (max - min + 1)) + min
+          }
+          var quote = userInfo.quotes[+quoteNum - 1]
+          // make sure quote isn't undef
+          if (quote === undefined) {
+            msg.channel.send(`That doesn't appear to be a valid quote number. I have ${userInfo.quotes.length} quotes for that user.`)
+            return
+          }
+          // check to make sure that the quote is within the limits
+          msg.channel.send(`[${+quoteNum}/${userInfo.quotes.length}] <@!${searchId}>: ${quote}`)
+        })
+      })
+    } else {
+      msg.channel.send('You didn\'t supply a username!')
+    }
   }
 
   // reddit stuff
