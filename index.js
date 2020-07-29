@@ -42,7 +42,6 @@ function calcBobbyTime() {
   return releaseDate.diff(rn, 'days')
 }
 
-
 async function getTwitchOauthToken() {
   const oauthUrl = `https://id.twitch.tv/oauth2/token?client_id=${twitchClientId}&client_secret=${twichClientSecret}&grant_type=client_credentials`
 
@@ -102,8 +101,8 @@ ${data.stream.channel.status}
 https://twitch.tv/pokimane`)
             liveEmbed.setTimestamp()
             liveEmbed.setFooter('Poki I love you please let me suck your toes')
-            // simpChannel.send(liveEmbed)
-            // simpChannel.send('@here ^')
+            simpChannel.send(liveEmbed)
+            simpChannel.send('@here ^')
             console.log('poki is now online')
             alertSent = true
           }
