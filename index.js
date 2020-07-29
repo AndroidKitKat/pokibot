@@ -149,39 +149,8 @@ client.on('message', msg => {
   }
   // return statement here to turn off the rest of the bot while testing
   return
-
-  // homo simpians
-  if (prefix === '!simp') {
-    if (command === 'alert') {
-      msg.channel.send(createJsonEmbed('simp alert'))
-    }
-  }
-
-  if (prefix === cmdPrefix) { // Only look at messages with the correct command prefix
-    if (command === 'hello') {
-      msg.channel.send('hello')
-    } else if (command === 'say') {
-      if (msgArray.length >= 1) {
-        msg.channel.send(msgArray.join(' '))
-      } else {
-        msg.channel.send('Hey you messed up, hehe. Give me something to say, !p say <message>')
-      }
-    } else if (command === 'sub') {
-      // check for the sub tiers
-      if (msgArray.join(' ').toLowerCase() === 'tier 3') {
-        const t3embed = new Discord.MessageEmbed()
-        t3embed.setTitle('Thanks for the Sub ^_^')
-        t3embed.setColor('#b970df')
-        t3embed.setDescription(`I reaaallllyyy appreciate the sub <@${msg.author.id}>.`)
-        t3embed.setImage('https://media.tenor.com/images/0de2b320fc290bd68a63f55431f9bf4f/tenor.gif')
-        msg.channel.send(t3embed)
-        msg.channel.send(createJsonEmbed('tier 3'))
-      } else if (msgArray.join(' ').toLowerCase() === 'tier 2') {
-        msg.channel.send(createJsonEmbed('tier 2'))
-      } else if (msgArray.join(' ').toLowerCase() === 'tier 1') {
-        msg.channel.send(createJsonEmbed('tier 1'))
-      }
-    } else if (command === 'pokigasm') {
+/*
+    else if (command === 'pokigasm') {
       var gasmEmbed = new Discord.MessageEmbed()
       gasmEmbed.setColor('#b970df')
       gasmEmbed.setImage('https://thumbs.gfycat.com/DimFancyFairyfly-size_restricted.gif')
@@ -194,7 +163,7 @@ client.on('message', msg => {
         msg.channel.send(createJsonEmbed('feet pics'))
       }
     } 
-  }
+  }*/
 })
 
 // register modules
