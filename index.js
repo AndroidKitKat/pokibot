@@ -7,6 +7,8 @@ const urlencode = require('urlencode')
 const jsdom = require('jsdom')
 const { JSDOM } = jsdom
 const { MongoClient } = require('mongodb')
+const path = require('path')
+const modules = require('require-all')(path.join(__dirname, 'modules'))
 // eslint-disable-next-line no-unused-vars
 const cron = require('cron').CronJob
 const client = new Discord.Client()
@@ -19,7 +21,7 @@ const bobbyChannelId = '736706894667841626'
 
 var bobbyChannel
 var simpChannel
-var cmdPrefix = '!p'
+var cmdPrefix = '!'
 var alertSent = false
 
 // mongo
@@ -28,6 +30,15 @@ const mognoClient = new MongoClient(mongoURL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
+
+function registerCommands() {
+  var modulesArray = Object.values(modules)
+  var commands = []
+  for (var ii = 0; ii < modulesArray.length; ii++) {
+    commands.push(modulesArray[ii].info.command)
+  }
+  return commands
+}
 
 function calcBobbyTime() {
   const releaseDate = moment('2020.12.11', 'YYYY.MM.DD')
@@ -173,14 +184,15 @@ function dpSearch(type, query) {
 
 // essentially bot commands
 client.on('message', msg => {
+  var msgArray = msg.content.split(' ')
   // bot should ignore itself!
   if (msg.author.id === '736317960691515412') {
     return
   }
-  // increment the pokidollars
+  // first allocate money for pokipoints
   pokiDb.then(mango => {
     var pokiDollarDb = mango.db().collection('pokidollars')
-    // update the db, making the user if they don't already exist!
+    // update the db, making the user if thedy don't already exist!
     pokiDollarDb.findOneAndUpdate(
       { discordId: msg.author.id },
       { $inc: { pokidollars: 1 } },
@@ -188,9 +200,25 @@ client.on('message', msg => {
     )
   })
 
-  var msgArray = msg.content.split(' ')
-  var prefix = ''
-  var command = ''
+  // ignore non commands
+  if (msgArray[0].charAt(0) !== cmdPrefix) {
+    return
+  }
+  var userCommand = msgArray.shift().replace(new RegExp(cmdPrefix, 'g'), '')
+  // check to make sure message is a command
+  if (!botCommands.includes(userCommand)) {
+    return
+  }
+  // if we make it here we've got a command
+  // pass in database if we need it
+  if (modules[userCommand].info.database === true) {
+    console.log(`${userCommand} wants the db`)
+    modules[userCommand].main(msg, msgArray, pokiDb)
+  } else {
+    modules[userCommand].main(msg, msgArray)
+  }
+  // return statement here to turn off the rest of the bot while testing
+  return
 
   // Get the prefix and the command
   if (msgArray.length >= 2) {
@@ -421,6 +449,9 @@ client.on('message', msg => {
     }
   }
 })
+
+// register modules
+var botCommands = registerCommands()
 
 // start the bot
 client.login(discordToken)
