@@ -147,23 +147,6 @@ client.on('message', msg => {
   } else {
     modules[userCommand].main(msg, msgArray)
   }
-  // return statement here to turn off the rest of the bot while testing
-  return
-/*
-    else if (command === 'pokigasm') {
-      var gasmEmbed = new Discord.MessageEmbed()
-      gasmEmbed.setColor('#b970df')
-      gasmEmbed.setImage('https://thumbs.gfycat.com/DimFancyFairyfly-size_restricted.gif')
-      gasmEmbed.setTitle('Pokigasm')
-      gasmEmbed.setDescription(`Oh yes <@${msg.author.id}>`)
-      msg.channel.send(gasmEmbed)
-    } else if (command === 'send') {
-      if (msgArray.join(' ') === 'feet pics maybe?') {
-        // Add method to pirchase feet pics
-        msg.channel.send(createJsonEmbed('feet pics'))
-      }
-    } 
-  }*/
 })
 
 // register modules
