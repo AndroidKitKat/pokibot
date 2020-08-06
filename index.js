@@ -118,10 +118,14 @@ client.on('message', msg => {
   if (msg.author.id === '736317960691515412') {
     return
   }
+  var ignored = ['283069267237142528']
   // first allocate money for pokipoints
   pokiDb.then(mango => {
     var pokiDollarDb = mango.db().collection('pokidollars')
     // update the db, making the user if thedy don't already exist!
+    if (ignored.includes(msg.author.id)){
+      return
+    }
     pokiDollarDb.findOneAndUpdate(
       { discordId: msg.author.id },
       { $inc: { pokidollars: 1 } },

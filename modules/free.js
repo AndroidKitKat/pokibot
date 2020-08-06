@@ -11,6 +11,9 @@ module.exports = {
   },
   main: function(msgData, msgArray) {
     var name = msgArray.shift()
+    if (name === undefined) {
+      return
+    }
     if (name.toLowerCase() === 'bobby') {
       msgData.channel.send(new Discord.MessageEmbed()
         .setImage('https://www.mypokecard.com/en/Gallery/my/galery/AUFz107M7SKK.jpg')

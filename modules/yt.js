@@ -3,13 +3,13 @@ const WebSearchAPIClient = require('azure-cognitiveservices-websearch');
 
 module.exports = {
   info: {
-    name: 'Technically DogPile Image Search ',
-    desc: 'This module searches DogPile for content',
+    name: 'BING VIEDOS BABY',
+    desc: 'This module searches BING for content',
     // if your function needs access to the database, make sure to set this to true
     database: false,
-    command: 'gis',
-    example: `!gis horses
-  > picture of some horses idk`
+    command: 'yt',
+    example: `!yt horses
+  > video of some horses idk`
   },
 
   main: function(msgData, msgArray) {
@@ -23,6 +23,6 @@ function bingSearch(query) {
   let credentials = new CognitiveServicesCredentials(process.env.BING_KEY_ONE);
   let webSearchApiClient = new WebSearchAPIClient(credentials);
   return webSearchApiClient.web.search(query).then((result) => {
-    return result.images.value[Math.floor(Math.random() * result.webPages.value.length)].contentUrl
+    return result.videos.value[Math.floor(Math.random() * result.webPages.value.length)].contentUrl
 })
 }

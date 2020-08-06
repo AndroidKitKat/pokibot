@@ -1,6 +1,5 @@
-const urlencode = require('urlencode')
-const { default: fetch } = require('node-fetch')
-const { JSDOM } = require('jsdom')
+const CognitiveServicesCredentials = require('ms-rest-azure').CognitiveServicesCredentials;
+const WebSearchAPIClient = require('azure-cognitiveservices-websearch');
 
 module.exports = {
   info: {
@@ -14,25 +13,16 @@ module.exports = {
   },
 
   main: function(msgData, msgArray) {
-    dpSearch(msgArray.join(' ')).then(res => {
-      msgData.channel.send(res)
-    })
+    bingSearch(msgArray.join(' ')).then(link => {
+      msgData.channel.send(link)
+   })
   }
 }
 
-function dpSearch(query) {
-  var url = 'https://www.dogpile.com/search/web?q=' + urlencode(query)
-  return fetch(url, {
-    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Safari/605.1.15'
-  }).then(res => {
-    return res.text()
-  }).then(data => {
-    const dom = new JSDOM(data)
-    var results = dom.window.document.getElementsByClassName('web-bing__url')
-    if (results.length === 0) {
-      return 'No results'
-    } else {
-      return results[Math.floor(Math.random() * results.length)].innerHTML
-    }
-  })
+function bingSearch(query) {
+  let credentials = new CognitiveServicesCredentials(process.env.BING_KEY_ONE);
+  let webSearchApiClient = new WebSearchAPIClient(credentials);
+  return webSearchApiClient.web.search(query).then((result) => {
+    return result.webPages.value[Math.floor(Math.random() * result.webPages.value.length)].url
+})
 }
