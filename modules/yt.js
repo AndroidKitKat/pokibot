@@ -20,12 +20,17 @@ module.exports = {
 }
 
 function bingSearch(query) {
-  let credentials = new CognitiveServicesCredentials(process.env.BING_KEY_ONE);
-  let webSearchApiClient = new WebSearchAPIClient(credentials);
-  return webSearchApiClient.web.search(query).then((result) => {
-    if (result.videos === undefined) {
-      return 'No results'
+  return fetch('https://api.cognitive.microsoft.com/bing/v7.0/videos/search?q=' + urlencode(query), {
+    headers: {
+      'Ocp-Apim-Subscription-Key': process.env.BING_KEY_ONE,
     }
-    return result.videos.value[Math.floor(Math.random() * result.videos.value.length)].contentUrl
-})
+  }).then(res => {
+    return res.json()
+  }).then(data => {
+    if (data.value.length == 0){
+      return 'No results'
+    } else {
+      return data.value[Math.floor(Math.random() * data.value.length)].contentUrl
+    }
+  })
 }
