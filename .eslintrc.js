@@ -1,12 +1,13 @@
 module.exports = {
   env: {
-    browser: true,
+    browser: false,
     commonjs: true,
     es2020: true
   },
   extends: [
     'standard'
   ],
+  
   parserOptions: {
     ecmaVersion: 11
   },
@@ -17,6 +18,10 @@ module.exports = {
     'space-before-function-paren': [
       'error',
       'never'
+    ],
+    indent: [2, 
+      2, 
+      {"SwitchCase": 1}
     ],
     quotes: [
       'error',

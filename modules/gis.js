@@ -1,5 +1,5 @@
-const CognitiveServicesCredentials = require('ms-rest-azure').CognitiveServicesCredentials;
-const WebSearchAPIClient = require('azure-cognitiveservices-websearch');
+const fetch = require('node-fetch')
+const urlencode = require('urlencode')
 
 module.exports = {
   info: {
@@ -20,12 +20,19 @@ module.exports = {
 }
 
 function bingSearch(query) {
-  let credentials = new CognitiveServicesCredentials(process.env.BING_KEY_ONE);
-  let webSearchApiClient = new WebSearchAPIClient(credentials);
-  return webSearchApiClient.web.search(query).then((result) => {
-    if (result.images === undefined) {
-      return 'No results'
-    }
-    return result.images.value[Math.floor(Math.random() * result.images.value.length)].contentUrl
+
+var url = 'https://api.cognitive.microsoft.com/bing/v7.0/images/search?q='
+const bingKey = process.env.BING_KEY_ONE
+var searchTerm = urlencode(query)
+var bingHeaders = {
+  'Ocp-Apim-Subscription-Key': bingKey,
+}
+
+fetch(url + searchTerm, {
+  headers: bingHeaders
+}).then(res => {
+  return res.json()
+}).then(data => {
+  return data.value[Math.floor(Math.random() * data.value.length)].contentUrl
 })
 }
