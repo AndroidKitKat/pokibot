@@ -23,6 +23,9 @@ function bingSearch(query) {
   let credentials = new CognitiveServicesCredentials(process.env.BING_KEY_ONE);
   let webSearchApiClient = new WebSearchAPIClient(credentials);
   return webSearchApiClient.web.search(query).then((result) => {
-    return result.images.value[Math.floor(Math.random() * result.webPages.value.length)].contentUrl
+    if (result.images === undefined) {
+      return 'No results'
+    }
+    return result.images.value[Math.floor(Math.random() * result.images.value.length)].contentUrl
 })
 }
