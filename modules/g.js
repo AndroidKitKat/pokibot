@@ -1,5 +1,5 @@
-const CognitiveServicesCredentials = require('ms-rest-azure').CognitiveServicesCredentials;
-const WebSearchAPIClient = require('azure-cognitiveservices-websearch');
+const fetch = require('node-fetch')
+const urlencode = require('urlencode')
 
 module.exports = {
   info: {
