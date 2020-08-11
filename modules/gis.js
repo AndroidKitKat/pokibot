@@ -28,6 +28,10 @@ function bingSearch(query) {
     return res.json()
   }).then(data => {
     console.log(data.value)
-    return data.value[Math.floor(Math.random() * data.value.length)].contentUrl
+    if (data.value.length == 0){
+      return 'No results'
+    } else {
+      return data.value[Math.floor(Math.random() * data.value.length)].contentUrl
+    }
   })
 }
