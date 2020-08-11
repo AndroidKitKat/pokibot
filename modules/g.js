@@ -31,7 +31,7 @@ function bingSearch(query) {
     if (data.webPages.value.length == 0){
       return 'No results'
     } else {
-      return data.webPages.value[Math.floor(Math.random() * data.webPages.value.length)].contentUrl
+      return data.webPages.value[Math.floor(Math.random() * data.webPages.value.length)].url
     }
   })
 } 
