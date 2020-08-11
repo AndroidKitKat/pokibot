@@ -27,6 +27,7 @@ function bingSearch(query) {
   }).then(res => {
     return res.json()
   }).then(data => {
+    console.log(data)
     if (data.value.length == 0){
       return 'No results'
     } else {
