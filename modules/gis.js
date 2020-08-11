@@ -27,6 +27,7 @@ function bingSearch(query) {
   }).then(res => {
     return res.json()
   }).then(data => {
+    console.log(data.value)
     return data.value[Math.floor(Math.random() * data.value.length)].contentUrl
   })
 }
