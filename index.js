@@ -19,10 +19,16 @@ var bobbyChannel
 var simpChannel
 var cmdPrefix = '!'
 var alertSent = false
+var lastPokiMessage
 
 // mongo
 var pokiDb
 const mognoClient = new MongoClient(mongoURL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+var pokiLogDb
+const mongoLogClient = new MongoClient(process.env.MONGO_LOG_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
@@ -62,6 +68,8 @@ client.on('ready', () => {
   bobbyChannel = client.channels.cache.get(bobbyChannelId)
   pokiDb = mognoClient.connect()
   console.log('db connected')
+  pokiLogDb = mongoLogClient.connect()
+  console.log('started loggin')
   const twitchToken = getTwitchOauthToken()
   console.log('got twitch token!')
 
@@ -116,42 +124,61 @@ https://twitch.tv/pokimane`)
 // essentially bot commands
 client.on('message', msg => {
   var msgArray = msg.content.split(' ')
-  // bot should ignore itself!
+  // log messages ( going to be needed for the delete command (i think)
+  pokiLogDb.then(mango => {
+    var serverIdchannelId = `${msg.guild.id}_${msg.channel.id}`
+    var logDb = mango.db().collection(serverIdchannelId)
+    logDb.insertOne(
+      {
+        id: msg.id,
+        guildName: msg.guild.name,
+        channelName: msg.channel.name,
+        author: msg.author,
+        content: msg.content
+      }
+    )
+  })
+  // bot should ignore itself! (except for logging)
   if (msg.author.id === '736317960691515412') {
+    // grab poki's last message
+    lastPokiMessage = msg.author.lastMessage
     return
   }
   // IGNORED for pokidollars 
   var ignored = ['283069267237142528'] // just matt
   // first allocate money for pokipoints
-  pokiDb.then(mango => {
-    var pokiDollarDb = mango.db().collection('pokidollars')
-    // update the db, making the user if thedy don't already exist!
-    if (ignored.includes(msg.author.id)){
-      return
-    }
-    pokiDollarDb.findOneAndUpdate(
-      { discordId: msg.author.id },
-      { $inc: { pokidollars: 1 } },
-      { upsert: true }
-    )
-  })
+
+  // this is so it doesn't make a db connection everytime an ignore person talks
+  if (!ignored.includes(msg.author.id)) {
+    pokiDb.then(mango => {
+      var pokiDollarDb = mango.db().collection('pokidollars')
+      pokiDollarDb.findOneAndUpdate(
+        { discordId: msg.author.id },
+        { $inc: { pokidollars: 1 } },
+        { upsert: true }
+      )
+    })
+  }
 
   // ignore non commands
   if (msgArray[0].charAt(0) !== cmdPrefix) {
     return
   }
+  // removes the prefix from the command, why did i do it this way?
   var userCommand = msgArray.shift().replace(new RegExp(cmdPrefix, 'g'), '')
   // check to make sure message is a command
   if (!botCommands.includes(userCommand)) {
     return
   }
+
+  
   // if we make it here we've got a command
   // pass in database if we need it
   if (modules[userCommand].info.database === true) {
     console.log(`${userCommand} wants the db`)
-    modules[userCommand].main(msg, msgArray, pokiDb)
+    modules[userCommand].main(msg, msgArray, pokiDb, pokiLogDb)
   } else {
-    modules[userCommand].main(msg, msgArray)
+    modules[userCommand].main(msg, msgArray, lastPokiMessage)
   }
 })
 
