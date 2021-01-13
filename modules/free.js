@@ -20,7 +20,7 @@ module.exports = {
         .setColor('#eb3327')
         .setTitle('Pokimane?')
         .setDescription('Nah, pokemon'))
-      msgData.channel.send(`Bobby will be free in ${calcTime('2020.12.11')} days!`)
+      msgData.channel.send(`Bobby will be free in ${calcTime('2021.12.11')} days!`)
     } else if (name.toLowerCase() === 'rowdy') {
       msgData.channel.send(`Rowdy will be free in ${calcTime('2020.12.15')} days!`)
     } else {

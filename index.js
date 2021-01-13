@@ -37,8 +37,9 @@ function registerCommands() {
 }
 
 function calcBobbyTime() {
-  const releaseDate = moment('2020.12.11', 'YYYY.MM.DD')
+  const releaseDate = moment('2021.12.11', 'YYYY.MM.DD')
   const rn = moment()
+  console.log(releaseDate.diff(rn, 'days'))
   return releaseDate.diff(rn, 'days')
 }
 
@@ -50,6 +51,7 @@ async function getTwitchOauthToken() {
   })
 
   var data = await response.json()
+  console.log(data.access_token)
   return data.access_token
 }
 
@@ -86,7 +88,7 @@ client.on('ready', () => {
           // send message if poki goes offline
           if (alertSent === true) {
             console.log('poki is offline')
-            simpChannel.send('Poki is now offline.')
+            // simpChannel.send('Poki is now offline.')
           }
           alertSent = false
         } else {
@@ -101,8 +103,8 @@ ${data.stream.channel.status}
 https://twitch.tv/pokimane`)
             liveEmbed.setTimestamp()
             liveEmbed.setFooter('Poki I love you please let me suck your toes')
-            simpChannel.send(liveEmbed)
-            simpChannel.send('@here ^')
+            // simpChannel.send(liveEmbed)
+            // simpChannel.send('@here ^')
             console.log('poki is now online')
             alertSent = true
           }
