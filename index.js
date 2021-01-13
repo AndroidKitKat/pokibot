@@ -120,7 +120,8 @@ client.on('message', msg => {
   if (msg.author.id === '736317960691515412') {
     return
   }
-  var ignored = ['283069267237142528']
+  // IGNORED for pokidollars 
+  var ignored = ['283069267237142528'] // just matt
   // first allocate money for pokipoints
   pokiDb.then(mango => {
     var pokiDollarDb = mango.db().collection('pokidollars')

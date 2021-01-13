@@ -20,6 +20,11 @@ module.exports = {
     } else {
       targetId = msgArray[0].replace(/\D/g, '')
     }
+    // EDGE FOR POKI
+	  if (targetId === '736317960691515412') {
+		  msgData.channel.send(phrases.selfDonatedMessages[Math.floor(Math.random() * phrases.selfDonatedMessages.length)])
+		  return;
+	  }
     dbObject.then(mango => {
       var pokiDollarDb = mango.db().collection('pokidollars')
       pokiDollarDb.findOne(
@@ -30,7 +35,7 @@ module.exports = {
           return
         }
         if (userInfo === null) {
-          msgData.send(phrases.userError)
+          msgData.channel.send(phrases.userError)
           return
         }
         msgData.channel.send(`<@!${targetId}> has $${userInfo.pokidollars}${phrases.donatePhrases[Math.floor(Math.random() * phrases.donatePhrases.length)]}`)
@@ -47,5 +52,10 @@ var phrases = {
     '. Keep trying to donate more! Every bit helps! <3',
     ' and I realllllly appreciate it.',
     ", but it's not about the money, I just enjoy chatting with you :kissing_heart:",
-  ]
+  ],
+	selfDonatedMessages: [
+		  'Why would I donate to myself? tee hee',
+			  'People have donated in my name before, but I know they\'re just joking. *giggles*',
+			  'I whip cunts with my pistol!',
+		  ]
 }
