@@ -20,6 +20,8 @@ var simpChannel
 var cmdPrefix = '!'
 var alertSent = false
 var lastPokiMessage
+var twitchToken
+
 
 // mongo
 var pokiDb
@@ -57,8 +59,10 @@ async function getTwitchOauthToken() {
   })
 
   var data = await response.json()
-  console.log(data.access_token)
-  return data.access_token
+  // console.log(data.access_token)
+  // return data.access_token
+  console.log('got token from twitch')
+  twitchToken = data.access_token
 }
 
 client.on('ready', () => {
@@ -70,7 +74,7 @@ client.on('ready', () => {
   console.log('db connected')
   pokiLogDb = mongoLogClient.connect()
   console.log('started loggin')
-  const twitchToken = getTwitchOauthToken()
+  getTwitchOauthToken()
   console.log('got twitch token!')
 
   var freeBobbyMessage = new CronJob('0 0 * * *', function() {
@@ -78,7 +82,11 @@ client.on('ready', () => {
     console.log('fired bobby message')
   }, null, true)
 
+  // get new twitch token every 24 hours or so
+  var getTTVToken = new CronJob('0 0 * * *', getTwitchOauthToken, null, true)
+
   freeBobbyMessage.start()
+  getTTVToken.start()
   setInterval(function() {
     const pokiStreamUrl = 'https://api.twitch.tv/kraken/streams/44445592'
     fetch(pokiStreamUrl, {
