@@ -13,9 +13,9 @@ module.exports = {
   },
 
   main: function(msgData, msgArray) {
-    bingSearch(msgArray.join(' ')).then(link => {
-      msgData.channel.send(link)
-   })
+    return new Promise((resolve, reject) => {
+      resolve(bingSearch(msgArray.join(' ')))
+    })
   }
 }
 

@@ -1,3 +1,4 @@
+require('dotenv').config()
 const Discord = require('discord.js')
 const fetch = require('node-fetch')
 const moment = require('moment')
@@ -21,7 +22,6 @@ var cmdPrefix = '!'
 var alertSent = false
 var lastPokiMessage
 var twitchToken
-
 
 // mongo
 var pokiDb
@@ -132,6 +132,7 @@ https://twitch.tv/pokimane`)
 // essentially bot commands
 client.on('message', msg => {
   var msgArray = msg.content.split(' ')
+  /*
   // log messages ( going to be needed for the delete command (i think)
   pokiLogDb.then(mango => {
     var serverIdchannelId = `${msg.guild.id}_${msg.channel.id}`
@@ -146,13 +147,14 @@ client.on('message', msg => {
       }
     )
   })
+  */
   // bot should ignore itself! (except for logging)
   if (msg.author.id === '736317960691515412') {
     // grab poki's last message
     lastPokiMessage = msg.author.lastMessage
     return
   }
-  // IGNORED for pokidollars 
+  // IGNORED for pokidollars
   var ignored = ['283069267237142528'] // just matt
   // first allocate money for pokipoints
 
@@ -179,14 +181,29 @@ client.on('message', msg => {
     return
   }
 
-  
   // if we make it here we've got a command
   // pass in database if we need it
+  // start typing
+  msg.channel.startTyping()
   if (modules[userCommand].info.database === true) {
     console.log(`${userCommand} wants the db`)
-    modules[userCommand].main(msg, msgArray, pokiDb, pokiLogDb)
+    modules[userCommand].main(msg, msgArray, pokiDb, pokiLogDb).then((res) => {
+      res.forEach(response => {
+        msg.channel.send(response)
+      })
+    }).catch(err => {
+      err
+    })
+    msg.channel.stopTyping()
   } else {
-    modules[userCommand].main(msg, msgArray, lastPokiMessage)
+    modules[userCommand].main(msg, msgArray, lastPokiMessage).then((res) => {
+      res.forEach(response => {
+        msg.channel.send(response)
+      })
+    }).catch(err => {
+      err
+    })
+    msg.channel.stopTyping()
   }
 })
 

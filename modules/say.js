@@ -8,10 +8,11 @@ module.exports = {
 > Hi pokibot!`
   },
   main: function(msgData, msgArray) {
-    if (msgArray.join(' ') === '' ) {
-      msgData.channel.send('You need to tell me to say something.')
-      return
-    }
-    msgData.channel.send(msgArray.join(' '))
+    return new Promise((resolve, reject) => {
+      if (msgArray.join(' ') === '' ) {
+        resolve('You need to tell me to say something.')
+      }
+      resolve(msgArray.join(' '))
+    })
   }
 }

@@ -11,6 +11,9 @@ module.exports = {
 > *deletes the last message the bot sent*`
   },
   main: function(msgData, msgArray, lastPokiMessage) {
-    lastPokiMessage.edit('delted message. im sowwy (⋟﹏⋞)').then(console.log(`a poki message was deleted by ${msgData.author.username}`))
+    return new Promise((resolve, reject) => {
+      lastPokiMessage.edit('delted message. im sowwy (⋟﹏⋞)').then(console.log(`a poki message was deleted by ${msgData.author.username}`))
+      reject('No Message')
+    })
   }
 }

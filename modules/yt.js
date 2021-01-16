@@ -13,8 +13,8 @@ module.exports = {
   },
 
   main: function(msgData, msgArray) {
-    bingSearch(msgArray.join(' ')).then(res => {
-      msgData.channel.send(res)
+    return new Promise((resolve, reject) => {
+      resolve(bingSearch(msgArray.join(' ')))
     })
   }
 }

@@ -11,10 +11,11 @@ module.exports = {
   },
   // function MUST be called main
   main: function(msgData, msgArray) {
-    msgData.channel.send(new Discord.MessageEmbed()
-      .setTitle('Pokigasm')
-      .setDescription(`Oh yes <@${msgData.author.id}>`)
-      .setImage('https://thumbs.gfycat.com/DimFancyFairyfly-size_restricted.gif')
-      .setColor('#b970df'))
+    return new Promise((resolve, reject) => {
+      resolve(new Discord.MessageEmbed().setTitle('Pokigasm')
+        .setDescription(`Oh yes <@${msgData.author.id}>`)
+        .setImage('https://thumbs.gfycat.com/DimFancyFairyfly-size_restricted.gif')
+        .setColor('#b970df'))
+    })
   }
 }

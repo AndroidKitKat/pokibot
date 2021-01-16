@@ -10,22 +10,22 @@ module.exports = {
 > Bobby will be free in 69 days`
   },
   main: function(msgData, msgArray) {
-    var name = msgArray.shift()
-    if (name === undefined) {
-      return
-    }
-    if (name.toLowerCase() === 'bobby') {
-      msgData.channel.send(new Discord.MessageEmbed()
-        .setImage('https://www.mypokecard.com/en/Gallery/my/galery/AUFz107M7SKK.jpg')
-        .setColor('#eb3327')
-        .setTitle('Pokimane?')
-        .setDescription('Nah, pokemon'))
-      msgData.channel.send(`Bobby will be free in ${calcTime('2021.12.11')} days!`)
-    } else if (name.toLowerCase() === 'rowdy') {
-      msgData.channel.send(`Rowdy will be free in ${calcTime('2020.12.15')} days!`)
-    } else {
-      msgData.channel.send('They must be free.')
-    }
+    return new Promise((resolve, reject) => {
+      var name = msgArray.shift()
+      if (name === undefined) {
+        reject('no name given')
+      }
+      if (name.toLowerCase() === 'bobby') {
+        resolve([
+          new Discord.MessageEmbed().setImage('https://i.imgur.com/wQN1eju.jpg').setColor('#eb3327').setTitle('Pokimane?').setDescription('Nah, pokemon'),
+          `Bobby will be free in ${calcTime('2021.12.11')} days!`,
+        ])
+      } else if (name.toLowerCase() === 'rowdy') {
+        resolve(`Rowdy will be free in ${calcTime('2020.12.15')} days!`)
+      } else {
+        resolve('They ain\'t in jail hun')
+      }
+    })
   }
 }
 

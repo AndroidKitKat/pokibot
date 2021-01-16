@@ -11,12 +11,14 @@ module.exports = {
   },
   // function MUST be called main
   main: function(msgData, msgArray) {
-    if (msgArray.join(' ') === 'feet pics maybe?') {
-      msgData.channel.send(new Discord.MessageEmbed()
-        .setTitle('Well...')
-        .setDescription('You did donate soooo....')
-        .setImage('https://i.redd.it/skd0krqm35x31.gif')
-        .setColor('#b970df'))
-    }
+    return new Promise((resolve, reject) => {
+      if (msgArray.join(' ') === 'feet pics maybe?') {
+        resolve(new Discord.MessageEmbed()
+          .setTitle('Well...')
+          .setDescription('You did donate soooo....')
+          .setImage('https://i.redd.it/skd0krqm35x31.gif')
+          .setColor('#b970df'))
+      }
+    })
   }
 }

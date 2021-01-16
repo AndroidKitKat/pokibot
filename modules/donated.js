@@ -11,34 +11,32 @@ module.exports = {
   // pass in the message object, the message array. if you have database: true, make sure to pass in the db
   // function MUST be called main
   main: function(msgData, msgArray, dbObject) {
-    var targetId = ''
-    if (msgArray.length > 1) {
-      msgData.channel.send(phrases.invalidArgs)
-      return
-    } else if (msgArray.length === 0) {
-      targetId = msgData.author.id
-    } else {
-      targetId = msgArray[0].replace(/\D/g, '')
-    }
-    // EDGE FOR POKI
-	  if (targetId === '736317960691515412') {
-		  msgData.channel.send(phrases.selfDonatedMessages[Math.floor(Math.random() * phrases.selfDonatedMessages.length)])
-		  return;
-	  }
-    dbObject.then(mango => {
-      var pokiDollarDb = mango.db().collection('pokidollars')
-      pokiDollarDb.findOne(
-        { discordId: targetId }
-      ).then((userInfo, err) => {
-        if (err) {
-          msgData.channel.send(phrases.userError)
-          return
-        }
-        if (userInfo === null) {
-          msgData.channel.send(phrases.userError)
-          return
-        }
-        msgData.channel.send(`<@!${targetId}> has $${userInfo.pokidollars}${phrases.donatePhrases[Math.floor(Math.random() * phrases.donatePhrases.length)]}`)
+    return new Promise((resolve, reject) => {
+      var targetId = ''
+      if (msgArray.length > 1) {
+        resolve(phrases.invalidArgs)
+      } else if (msgArray.length === 0) {
+        targetId = msgData.author.id
+      } else {
+        targetId = msgArray[0].replace(/\D/g, '')
+      }
+      // EDGE FOR POKI
+      if (targetId === '736317960691515412') {
+        resolve(phrases.selfDonatedMessages[Math.floor(Math.random() * phrases.selfDonatedMessages.length)])
+      }
+      dbObject.then(mango => {
+        var pokiDollarDb = mango.db().collection('pokidollars')
+        pokiDollarDb.findOne(
+          { discordId: targetId }
+        ).then((userInfo, err) => {
+          if (err) {
+            resolve(phrases.userError)
+          }
+          if (userInfo === null) {
+            resolve(phrases.userError)
+          }
+          resolve(`<@!${targetId}> has $${userInfo.pokidollars}${phrases.donatePhrases[Math.floor(Math.random() * phrases.donatePhrases.length)]}`)
+        })
       })
     })
   }
@@ -53,9 +51,9 @@ var phrases = {
     ' and I realllllly appreciate it.',
     ", but it's not about the money, I just enjoy chatting with you :kissing_heart:",
   ],
-	selfDonatedMessages: [
-		  'Why would I donate to myself? tee hee',
-			  'People have donated in my name before, but I know they\'re just joking. *giggles*',
-			  'I whip cunts with my pistol!',
-		  ]
+  selfDonatedMessages: [
+    'Why would I donate to myself? tee hee',
+    'People have donated in my name before, but I know they\'re just joking. *giggles*',
+    'I whip cunts with my pistol!',
+  ]
 }

@@ -13,8 +13,11 @@ module.exports = {
   },
 
   main: function(msgData, msgArray) {
-    bingSearch(msgArray.join(' ')).then(res => {
-      msgData.channel.send(res)
+    return new Promise((resolve, reject) => {
+      resolve(bingSearch(msgArray.join(' ')))
+      // bingSearch(msgArray.join(' ')).then(res => {
+      //   msgData.channel.send(res)
+      // })
     })
   }
 }
@@ -27,7 +30,7 @@ function bingSearch(query) {
   }).then(res => {
     return res.json()
   }).then(data => {
-    if (data.value.length == 0){
+    if (data.value.length === 0) {
       return 'No results'
     } else {
       return data.value[Math.floor(Math.random() * data.value.length)].contentUrl

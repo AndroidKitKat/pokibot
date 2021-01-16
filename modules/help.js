@@ -9,6 +9,8 @@ module.exports = {
   },
 
   main: function(msgData, msgArray) {
-    msgData.author.send('read the code: https://github.com/AndroidKitKat/pokibot')
+    return new Promise((resolve, reject) => {
+      resolve('read the code: https://github.com/AndroidKitKat/pokibot')
+    })
   }
 }
