@@ -14,7 +14,9 @@ module.exports = {
 
   main: function(msgData, msgArray) {
     return new Promise((resolve, reject) => {
-      resolve([bingSearch(msgArray.join(' '))])
+      bingSearch(msgArray.join(' ')).then(res => {
+        resolve([res])
+      })
     })
   }
 }
