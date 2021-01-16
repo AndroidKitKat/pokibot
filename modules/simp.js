@@ -13,11 +13,11 @@ module.exports = {
   main: function(msgData, msgArray) {
     return new Promise((resolve, reject) => {
       if (msgArray.shift() === 'alert') {
-        resolve(new Discord.MessageEmbed()
+        resolve([new Discord.MessageEmbed()
           .setTitle('Hey man')
           .setDescription('We only simp ironically here.')
           .setImage('https://i.imgur.com/dPyh4HO.gif')
-          .setColor('#eb3327'))
+          .setColor('#eb3327')])
       }
     })
   }

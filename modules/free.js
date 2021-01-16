@@ -21,9 +21,9 @@ module.exports = {
           `Bobby will be free in ${calcTime('2021.12.11')} days!`,
         ])
       } else if (name.toLowerCase() === 'rowdy') {
-        resolve(`Rowdy will be free in ${calcTime('2020.12.15')} days!`)
+        resolve([`Rowdy will be free in ${calcTime('2020.12.15')} days!`])
       } else {
-        resolve('They ain\'t in jail hun')
+        resolve(['They ain\'t in jail hun'])
       }
     })
   }

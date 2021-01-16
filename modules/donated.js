@@ -14,7 +14,7 @@ module.exports = {
     return new Promise((resolve, reject) => {
       var targetId = ''
       if (msgArray.length > 1) {
-        resolve(phrases.invalidArgs)
+        resolve([phrases.invalidArgs])
       } else if (msgArray.length === 0) {
         targetId = msgData.author.id
       } else {
@@ -22,7 +22,7 @@ module.exports = {
       }
       // EDGE FOR POKI
       if (targetId === '736317960691515412') {
-        resolve(phrases.selfDonatedMessages[Math.floor(Math.random() * phrases.selfDonatedMessages.length)])
+        resolve([phrases.selfDonatedMessages[Math.floor(Math.random() * phrases.selfDonatedMessages.length)]])
       }
       dbObject.then(mango => {
         var pokiDollarDb = mango.db().collection('pokidollars')
@@ -30,12 +30,12 @@ module.exports = {
           { discordId: targetId }
         ).then((userInfo, err) => {
           if (err) {
-            resolve(phrases.userError)
+            resolve([phrases.userError])
           }
           if (userInfo === null) {
-            resolve(phrases.userError)
+            resolve([phrases.userError])
           }
-          resolve(`<@!${targetId}> has $${userInfo.pokidollars}${phrases.donatePhrases[Math.floor(Math.random() * phrases.donatePhrases.length)]}`)
+          resolve([`<@!${targetId}> has $${userInfo.pokidollars}${phrases.donatePhrases[Math.floor(Math.random() * phrases.donatePhrases.length)]}`])
         })
       })
     })

@@ -10,7 +10,7 @@ module.exports = {
 
   main: function(msgData, msgArray) {
     return new Promise((resolve, reject) => {
-      resolve('read the code: https://github.com/AndroidKitKat/pokibot')
+      resolve(['read the code: https://github.com/AndroidKitKat/pokibot'])
     })
   }
 }

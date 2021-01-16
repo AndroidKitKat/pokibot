@@ -33,11 +33,11 @@ module.exports = {
           default:
             reject('No tier')
         }
-        resolve(new Discord.MessageEmbed()
+        resolve([new Discord.MessageEmbed()
           .setTitle(title)
           .setDescription(desc)
           .setImage(image)
-          .setColor('#b970df'))
+          .setColor('#b970df')])
       }
     })
   }

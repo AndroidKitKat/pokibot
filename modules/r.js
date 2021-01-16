@@ -16,9 +16,9 @@ module.exports = {
       const subreddit = msgArray.shift()
       var redditEmbed = new Discord.MessageEmbed()
       if (msgArray.length > 0) {
-        resolve('Hey, sooo you can\'t have a sub name longer than one word. Try again ^.^')
+        resolve(['Hey, sooo you can\'t have a sub name longer than one word. Try again ^.^'])
       } else if (subreddit.length > 21) {
-        resolve('Hey, soooo subreddit names can\'t be that long. Try again :pokishy:')
+        resolve(['Hey, soooo subreddit names can\'t be that long. Try again :pokishy:'])
       }
       var url = 'https://reddit.com/r/' + subreddit + '/.json'
       fetch(url, {
@@ -31,8 +31,7 @@ module.exports = {
         try {
           // wrong sub name
           if (data.data.children.length === 0) {
-            resolve('Hmmmmmmm, I can\'t seem to find that sub. Try again?')
-            return
+            resolve(['Hmmmmmmm, I can\'t seem to find that sub. Try again?'])
           }
           var post = data.data.children[Math.floor(Math.random() * data.data.children.length)]
           redditEmbed.setColor('#B7EA8')
@@ -42,9 +41,9 @@ module.exports = {
             .setThumbnail('https://i.imgur.com/9VoQjPH.png')
             .setImage(post.data.url)
             // .setImage(post.data.preview.images.resolutions[0].url)
-          resolve(redditEmbed)
+          resolve([redditEmbed])
         } catch (err) {
-          resolve('We hit a snag. Perhaps that sub was banned')
+          resolve(['We hit a snag. Perhaps that sub was banned'])
         }
       })
     })

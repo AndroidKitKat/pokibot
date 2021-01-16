@@ -15,7 +15,7 @@ module.exports = {
   // When you don't want to send a message, reject the promise. 
   main: function(msgData, msgArray, dbObject) {
     return new Promise((resolve, reject) => {
-      resolve('This is going to be sent to the channel!')
+      resolve(['This is going to be sent to the channel!'])
       // reject('This is not going to be sent to the channel')
     })
   }

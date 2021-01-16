@@ -13,11 +13,11 @@ module.exports = {
   main: function(msgData, msgArray) {
     return new Promise((resolve, reject) => {
       if (msgArray.join(' ') === 'feet pics maybe?') {
-        resolve(new Discord.MessageEmbed()
+        resolve([new Discord.MessageEmbed()
           .setTitle('Well...')
           .setDescription('You did donate soooo....')
           .setImage('https://i.redd.it/skd0krqm35x31.gif')
-          .setColor('#b970df'))
+          .setColor('#b970df')])
       }
     })
   }

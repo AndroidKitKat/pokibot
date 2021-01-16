@@ -13,17 +13,17 @@ module.exports = {
       var type = msgArray.shift()
       // we want to add a quote
       if (type === undefined) {
-        resolve('You didn\'t supply a username!')
+        resolve(['You didn\'t supply a username!'])
       }
       if (type.toLowerCase() === 'add') {
         var userId = msgArray.shift()
         var newQuote = msgArray.join(' ')
 
         if (!(/<@!\d.*>/.test(userId))) {
-          resolve('Not a valid user!')
+          resolve(['Not a valid user!'])
         }
         if (newQuote === '') {
-          resolve('Quote cannot be empty!')
+          resolve(['Quote cannot be empty!'])
         }
         dbObject.then(mango => {
           var pokiQuoteDb = mango.db().collection('quotes')
@@ -32,7 +32,7 @@ module.exports = {
             { $push: { quotes: newQuote } },
             { upsert: true }
           )
-          resolve('The operation completed.')
+          resolve(['The operation completed.'])
         })
       } else if (/@!\d*>/.test(type)) {
         // user type
@@ -42,7 +42,7 @@ module.exports = {
         if (quoteNum !== undefined) {
           // check to make sure it's a number
           if (isNaN(quoteNum)) {
-            resolve(`${quoteNum} is not a valid number!`)
+            resolve([`${quoteNum} is not a valid number!`])
           }
         }
         dbObject.then(mango => {
@@ -51,10 +51,10 @@ module.exports = {
             { discordId: searchId }
           ).then((userInfo, err) => {
             if (err) {
-              resolve('Seems there was error contacting the database.')
+              resolve(['Seems there was error contacting the database.'])
             }
             if (userInfo === null) {
-              resolve(`<@!${searchId}> doesn't have any quotes. :/`)
+              resolve([`<@!${searchId}> doesn't have any quotes. :/`])
             }
             if (quoteNum === undefined) {
               var max = userInfo.quotes.length
@@ -64,9 +64,9 @@ module.exports = {
             var quote = userInfo.quotes[+quoteNum - 1]
             // make sure the quote isn't undefined
             if (quote === undefined) {
-              resolve(`That doesn't appear to be a valid quote number. I have ${userInfo.quotes.length} quotes for that user.`)
+              resolve([`That doesn't appear to be a valid quote number. I have ${userInfo.quotes.length} quotes for that user.`])
             }
-            resolve(`[${+quoteNum}/${userInfo.quotes.length}] <@!${searchId}>: ${quote}`)
+            resolve([`[${+quoteNum}/${userInfo.quotes.length}] <@!${searchId}>: ${quote}`])
           })
         })
       }

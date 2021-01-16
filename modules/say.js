@@ -10,9 +10,9 @@ module.exports = {
   main: function(msgData, msgArray) {
     return new Promise((resolve, reject) => {
       if (msgArray.join(' ') === '' ) {
-        resolve('You need to tell me to say something.')
+        resolve(['You need to tell me to say something.'])
       }
-      resolve(msgArray.join(' '))
+      resolve([msgArray.join(' ')])
     })
   }
 }
