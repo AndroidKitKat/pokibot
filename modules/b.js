@@ -10,9 +10,7 @@ module.exports = {
   main: function(msgData, msgArray) {
     return new Promise((resolve, reject) => {
 
-      var phrase = msgArray.join(' ')
-
-      if(!phrase){
+      if(!msgArray){
         resolve(['**Usage:** !b -[flags] [message]'])
       }
 
@@ -20,32 +18,30 @@ module.exports = {
       var vowels = new Set(['a', 'e', 'i', 'o', 'u']);
       var special = new Set([]);
 
-      if(phrase.startsWith('-')){
-        var flag = phrase.substr(1, phrase.indexOf(' ') - 1);
-        phrase = phrase.substr(phrase.indexOf(' ') + 1).split(" ");
+      if(msgArray[0].startsWith('-')){
+        var flag = msgArray.shift().substr(1);
         for(var i = 0; i < flag.length; i++){
           special.add(flag.charAt(i));
         }
 
         vowels = new Set([...special].filter(x => vowels.has(x)));
-      }else{
-        phrase = phrase.split(" ");
       }
 
-      for(var i = 0; i < phrase.length; i++){
-        if(phrase[i] == ""){
+      for(var i = 0; i < msgArray.length; i++){
+
+        if(msgArray[i] == ""){
           response += " ";
           continue;
         }
 
-        var curr = phrase[i][0].toLowerCase()
+        var curr = msgArray[i][0].toLowerCase()
 
         if(vowels.has(curr)){
-          response += '🅱' + phrase[i] + " "
+          response += '🅱' + msgArray[i] + " "
         }else if(special.has(curr) || special.size == 0){
-            response += '🅱' + phrase[i].substr(1) + " ";
+            response += '🅱' + msgArray[i].substr(1) + " ";
         }else{
-            response += phrase[i] + " ";
+            response += msgArray[i] + " ";
         }
       }
 
